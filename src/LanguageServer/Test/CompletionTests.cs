@@ -29,6 +29,7 @@ using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Completion;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
+using Microsoft.Python.LanguageServer.Tests.Adapters;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
 using Microsoft.Python.Parsing;
 using Microsoft.Python.Parsing.Tests;
@@ -83,7 +84,7 @@ import datetime
 datetime.datetime.
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new CompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(3, 19));
             comps.Should().HaveLabels("now", @"tzinfo", @"ctime");
         }

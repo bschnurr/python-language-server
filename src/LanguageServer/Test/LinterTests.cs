@@ -23,7 +23,6 @@ using NSubstitute;
 using TestUtilities;
 
 namespace Microsoft.Python.LanguageServer.Tests {
-    using LanguageServer = Implementation.LanguageServer;
 
     [TestClass]
     public class LinterTests : LanguageServerTestBase {
@@ -56,13 +55,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
             PublishDiagnostics();
             ds.Diagnostics[analysis.Document.Uri].Should().HaveCount(1);
 
-            LanguageServer.HandleLintingOnOff(Services, false);
+            Implementation.LanguageServer.HandleLintingOnOff(Services, false);
             options.LintingEnabled.Should().BeFalse();
 
             PublishDiagnostics();
             ds.Diagnostics[analysis.Document.Uri].Should().BeEmpty();
 
-            LanguageServer.HandleLintingOnOff(Services, true);
+            Implementation.LanguageServer.HandleLintingOnOff(Services, true);
             options.LintingEnabled.Should().BeTrue();
 
             PublishDiagnostics();
