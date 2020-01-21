@@ -19,3 +19,5 @@ src/.idea/
 
 # Mercurial root directory
 .hg
+/src/UnitTests/LanguageServerClient/UnitTests.LanguageServerClient/bin
+/src/UnitTests/LanguageServerClient/UnitTests.LanguageServerClient/obj

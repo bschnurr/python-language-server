@@ -40,6 +40,7 @@
     <ProjectReference Include="..\..\Core\Impl\Microsoft.Python.Core.csproj" />
     <ProjectReference Include="..\..\Parsing\Impl\Microsoft.Python.Parsing.csproj" />
     <ProjectReference Include="..\..\UnitTests\Core\Impl\UnitTests.Core.csproj" />
+    <ProjectReference Include="..\..\UnitTests\LanguageServerClient\UnitTests.LanguageServerClient\UnitTests.LanguageServerClient.csproj" />
     <ProjectReference Include="..\Impl\Microsoft.Python.LanguageServer.csproj" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
