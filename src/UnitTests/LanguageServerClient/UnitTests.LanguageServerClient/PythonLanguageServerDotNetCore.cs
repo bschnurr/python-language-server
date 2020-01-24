@@ -34,11 +34,11 @@ namespace UnitTests.LanguageServerClient {
         private const string DllName = "Microsoft.Python.LanguageServer.dll";
 
         public PythonLanguageServerDotNetCore(IServiceProvider site, JoinableTaskContext joinableTaskContext) {
-            _site = site ?? throw new ArgumentNullException(nameof(site));
+            //_site = site ?? throw new ArgumentNullException(nameof(site));
             _joinableTaskContext = joinableTaskContext ?? throw new ArgumentNullException(nameof(joinableTaskContext));
         }
 
-#if DEBUG
+
         // Since VS is 32-bit process, Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
         // gives us 32-bit program files so can't use that
         private static string DotNetExeFilePath = Path.Combine(
@@ -46,7 +46,7 @@ namespace UnitTests.LanguageServerClient {
             "dotnet",
             "dotnet.exe"
         );
-#endif
+
 
         public async override Task<Connection> ActivateAsync() {
             await _joinableTaskContext.Factory.SwitchToMainThreadAsync();

@@ -53,7 +53,7 @@ namespace UnitTests.LanguageServerClient {
             JoinableTaskContext joinableTaskContext,
             IPythonLanguageClientContext clientContext
         ) {
-            _site = site ?? throw new ArgumentNullException(nameof(site));
+          //  _site = site ?? throw new ArgumentNullException(nameof(site));
             _joinableTaskContext = joinableTaskContext ?? throw new ArgumentNullException(nameof(joinableTaskContext));
             _clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
             _disposables = new DisposableBag(GetType().Name);
@@ -71,38 +71,12 @@ namespace UnitTests.LanguageServerClient {
             CustomMessageTarget = new PythonLanguageClientCustomTarget(site);
         }
 
-        public static async Task<PythonLanguageClient> CreateClientAsync(InterpreterConfiguration config, string rootPath) {
-            var contentTypeName = "PYTHONFILE";
-
-            var clientContext = new PythonLanguageClientContextFixed(
-                contentTypeName,
-                config,
-                rootPath,
-                Enumerable.Empty<string>()
-            );
-
-            var broker = new MockLanguageClientBroker();
-            await PythonLanguageClient.EnsureLanguageClientAsync(
-                null,
-                new JoinableTaskContext(),
-                clientContext,
-                broker
-            );
-
-            return PythonLanguageClient.FindLanguageClient(contentTypeName);
-        }
-
-
-        internal static async Task EnsureLanguageClientAsync(
+        public static async Task EnsureLanguageClientAsync(
             IServiceProvider site,
             JoinableTaskContext joinableTaskContext,
             IPythonLanguageClientContext clientContext,
             ILanguageClientBroker broker
         ) {
-            if (site == null) {
-                throw new ArgumentNullException(nameof(site));
-            }
-
             if (clientContext == null) {
                 throw new ArgumentNullException(nameof(clientContext));
             }
@@ -220,7 +194,7 @@ namespace UnitTests.LanguageServerClient {
 
             InitializationOptions = _server.CreateInitializationOptions(
                 interpreterPath,
-                langVersion.ToString(),
+                version.ToString(),
                 rootPath,
                 searchPaths
             );
@@ -285,7 +259,7 @@ namespace UnitTests.LanguageServerClient {
            // _site.GetUIThread().InvokeTaskSync(async () => {
                 //await StopAsync?.Invoke(this, EventArgs.Empty);
             //   }, CancellationToken.None);
-            StopAsync(this, EventArgs.Empty).GetAwaiter().GetResult();
+            StopAsync?.Invoke(this, EventArgs.Empty).GetAwaiter().GetResult();
         }
 
         private void OnClosed(object sender, EventArgs e) {

@@ -25,7 +25,7 @@ namespace UnitTests.LanguageServerClient {
         private readonly IServiceProvider _site;
 
         public PythonLanguageClientCustomTarget(IServiceProvider site) {
-            _site = site ?? throw new ArgumentNullException(nameof(site));
+           // _site = site ?? throw new ArgumentNullException(nameof(site));
         }
 
         [JsonRpcMethod("telemetry/event")]

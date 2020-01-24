@@ -14,11 +14,17 @@
 // permissions and limitations under the License.
 
 using System;
+using System.Threading.Tasks;
+using Microsoft.Python.Analysis;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Diagnostics;
+using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis.Tests;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Idle;
+using Microsoft.Python.Core.Services;
 using Microsoft.Python.LanguageServer.Diagnostics;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using NSubstitute;
 
 namespace Microsoft.Python.LanguageServer.Tests {
@@ -39,6 +45,21 @@ namespace Microsoft.Python.LanguageServer.Tests {
         protected void RaiseIdleEvent() {
             var idle = Services.GetService<IIdleTimeService>();
             idle.Idle += Raise.EventWith(null, EventArgs.Empty);
+        }
+
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+
+            var interpreter = services.GetService<IPythonInterpreter>();
+            var client = await ServicesLspAdapter.CreateClientAsync(interpreter.Configuration);
+            services.AddService(client);
+
+            //Replace regular rdt with Lsp version
+            var rdt = services.GetService<IRunningDocumentTable>();
+            services.RemoveService(rdt);
+            services.AddService(new RunningDocumentTableLspAdapter(services, rdt, client));
+
+            return services;
         }
     }
 }

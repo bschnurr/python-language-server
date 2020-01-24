@@ -30,7 +30,7 @@ namespace UnitTests.LanguageServerClient.Mocks {
     /// a lot of other dlls that are normally available in VS install, but that
     /// need to be referenced by the test project in order to run outside VS.
     /// </summary>
-    internal class MockLanguageClientBroker : ILanguageClientBroker {
+    public class MockLanguageClientBroker : ILanguageClientBroker {
         private JsonRpc _rpc;
 
         public async Task LoadAsync(ILanguageClientMetadata metadata, ILanguageClient client) {

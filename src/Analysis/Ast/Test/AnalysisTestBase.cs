@@ -75,7 +75,7 @@ namespace Microsoft.Python.Analysis.Tests {
         protected Task<IServiceManager> CreateServicesAsync(InterpreterConfiguration configuration, string[] searchPaths = null)
             => CreateServicesAsync(TestData.GetTestSpecificRootPath(), configuration, null, null, searchPaths);
 
-        protected async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+        protected virtual async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
             configuration = configuration ?? PythonVersions.LatestAvailable;
             configuration.AssertInstalled();
             Trace.TraceInformation("Cache Path: " + stubCacheFolderPath);

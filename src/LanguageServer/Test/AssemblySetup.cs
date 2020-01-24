@@ -36,7 +36,6 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         private class LanguageServerTestEnvironment : TestEnvironmentImpl, ITestEnvironment {
-            public static JoinableTaskContext JoinableTaskContext;
 
             public static void Initialize(TestContext testContext) {
                 var instance = new LanguageServerTestEnvironment();
