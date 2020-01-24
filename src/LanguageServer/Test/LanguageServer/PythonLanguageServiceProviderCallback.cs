@@ -26,12 +26,6 @@ using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
 
-    public class LspRequest<TIn, TOut> {
-        public LspRequest(string name) { }
-
-        public string Name { get; }
-    }
-
     internal class PythonLanguageServiceProviderCallback {
         private readonly IServiceProvider _serviceProvider;
 
@@ -69,9 +63,10 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
                 case Methods.TextDocumentSignatureHelpName:
                 case Methods.TextDocumentDefinitionName:
                 case Methods.TextDocumentReferencesName:
+                case Methods.TextDocumentOnTypeFormattingName:
                     return await DispatchToLanguageServer(method, param, cancellationToken);
                 default:
-                    return default(TOut);
+                    throw new ArgumentException(method.Name);
             }
         }
 
@@ -91,7 +86,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
         }
 
         private async Task<PythonLanguageClient> GetOrCreateClientAsync(Uri uri) {
-            //await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var filePath = uri.LocalPath;
             if (string.IsNullOrEmpty(filePath)) {

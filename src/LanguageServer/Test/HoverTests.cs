@@ -13,15 +13,25 @@
 // See the Apache Version 2.0 License for specific language governing
 // permissions and limitations under the License.
 
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Analysis;
 using Microsoft.Python.Core.Text;
+using Microsoft.Python.Core;
 using Microsoft.Python.LanguageServer.Sources;
+using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.Threading;
 using TestUtilities;
+using UnitTests.LanguageServerClient;
+using UnitTests.LanguageServerClient.Mocks;
+using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
+using Microsoft.Python.LanguageServer.Protocol;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
@@ -289,20 +299,71 @@ class A:
             hover.Should().BeNull();
         }
 
-        private static void AssertHover(HoverSource hs, IDocumentAnalysis analysis, SourceLocation position, string hoverText, SourceSpan? span = null) {
-            var hover = hs.GetHover(analysis, position);
+        private static void AssertHover(HoverSource hs, IDocumentAnalysis analysis, SourceLocation sourceLocation, string hoverText, SourceSpan? span = null) {
+            var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
 
-            if (hoverText.EndsWith("*")) {
-                // Check prefix first, but then show usual message for mismatched value
-                if (!hover.contents.value.StartsWith(hoverText.Remove(hoverText.Length - 1))) {
+            using (var client = CreateClientAsync().WaitAndUnwrapExceptions()) {
+                var uri = analysis.Document.Uri;
+                RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content).WaitAndUnwrapExceptions();
+                
+                cb.SetClient(uri, client);
+
+                //convert to LSP postion
+                Position position = sourceLocation;
+
+                var hover = cb.RequestAsync(
+                    new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
+                    new LSP.TextDocumentPositionParams {
+                        TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                        Position = new LSP.Position { Line = position.line, Character = position.character }
+                    },
+                    CancellationToken.None
+                ).WaitAndUnwrapExceptions();
+
+
+                if (hoverText.EndsWith("*")) {
+                    // Check prefix first, but then show usual message for mismatched value
+                    if (!hover.contents.value.StartsWith(hoverText.Remove(hoverText.Length - 1))) {
+                        Assert.AreEqual(hoverText, hover.contents.value);
+                    }
+                } else {
                     Assert.AreEqual(hoverText, hover.contents.value);
                 }
-            } else {
-                Assert.AreEqual(hoverText, hover.contents.value);
-            }
-            if (span.HasValue) {
-                hover.range.Should().Be((Range)span.Value);
+                if (span.HasValue) {
+                    hover.range.Should().Be((Range)span.Value);
+                }
+
             }
         }
+
+        public static async Task<PythonLanguageClient> CreateClientAsync() {
+            var contentTypeName = "PythonFile";
+
+            var clientContext = new PythonLanguageClientContextFixed(
+                contentTypeName,
+                PythonVersions.LatestAvailable,
+                null,
+                Enumerable.Empty<string>()
+            );
+
+            var broker = new MockLanguageClientBroker();
+            await PythonLanguageClient.EnsureLanguageClientAsync(
+                null,
+                new JoinableTaskContext(),
+                clientContext,
+                broker
+            );
+
+            return PythonLanguageClient.FindLanguageClient(contentTypeName);
+        }
+
     }
+
+
+
+      
+
+      
+
+    
 }

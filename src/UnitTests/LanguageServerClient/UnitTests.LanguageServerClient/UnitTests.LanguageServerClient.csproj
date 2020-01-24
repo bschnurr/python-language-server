@@ -1,6 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
