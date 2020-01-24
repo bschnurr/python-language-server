@@ -3,6 +3,7 @@ using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.Python.Core;
+using Microsoft.Python.Core.Text;
 using Microsoft.VisualStudio.Threading;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,6 +71,40 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
                        },
                        CancellationToken.None
                    ).WaitAndUnwrapExceptions();
+
+                return res;
+            }
+        }
+
+        static public async Task<TextEdit[]> BlockFormat(string text, Position position, FormattingOptions options) {
+            var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
+
+            var configuration = PythonVersions.LatestAvailable;
+
+            using (var client = await CreateClientAsync(configuration)) {
+
+                var modulePath = TestData.GetDefaultModulePath();
+                var moduleDirectory = Path.GetDirectoryName(modulePath);
+
+                var uri = new Uri(modulePath);
+                cb.SetClient(uri, client);
+
+                //   File.WriteAllText(uri.ToAbsolutePath(), text);
+                await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), text);
+
+                var res = await cb.RequestAsync(
+                       new LSP.LspRequest<LSP.DocumentOnTypeFormattingParams, TextEdit[]>(LSP.Methods.TextDocumentOnTypeFormattingName),
+                       new LSP.DocumentOnTypeFormattingParams {
+                           TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                           Position = new LSP.Position { Line = position.line, Character = position.character },
+                           Options = new LSP.FormattingOptions() {
+                               InsertSpaces = options.insertSpaces,
+                               TabSize = options.tabSize,
+                           },
+                           Character = ":"
+                       },
+                       CancellationToken.None
+                   );
 
                 return res;
             }
