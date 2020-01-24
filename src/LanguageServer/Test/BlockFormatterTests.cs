@@ -22,6 +22,7 @@ using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Formatting;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
@@ -49,7 +50,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestMethod, Priority(0)]
         public async Task FirstLine() {
             using (var reader = new StringReader(string.Empty)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, new Position { line = 0, character = 4 }, new FormattingOptions());
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), new Position { line = 0, character = 4 }, new FormattingOptions());
                 edits.Should().BeEmpty();
             }
         }
@@ -57,7 +58,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestMethod, Priority(0)]
         public void TooShort() {
             using (var reader = new StringReader("a + b")) {
-                Func<Task<TextEdit[]>> func = () => BlockFormatter.ProvideEdits(reader, new Position { line = 1, character = 4 }, new FormattingOptions());
+                Func<Task<TextEdit[]>> func = () => ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), new Position { line = 1, character = 4 }, new FormattingOptions());
                 func.Should().Throw<ArgumentException>().And.ParamName.Should().Be("position");
             }
         }
@@ -69,7 +70,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
     'b':
 ";
             using (var reader = new StringReader(code)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, new Position { line = 2, character = 7 }, new FormattingOptions());
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), new Position { line = 2, character = 7 }, new FormattingOptions());
                 edits.Should().BeEmpty();
             }
         }
@@ -85,7 +86,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", filename);
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -105,7 +106,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "tryBlocks2.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -121,7 +122,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "tryBlocks2.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().BeEmpty();
             }
         }
@@ -141,7 +142,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "tryBlocks4.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -157,7 +158,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "tryBlocks4.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().BeEmpty();
             }
         }
@@ -178,7 +179,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var newText = new string('\t', endCharacter - 1);
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(newText, (line, startCharacter, line, endCharacter));
             }
         }
@@ -203,7 +204,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocks2.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -218,7 +219,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocks2.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().BeEmpty();
             }
         }
@@ -243,7 +244,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocks4.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -257,7 +258,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocks4.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().BeEmpty();
             }
         }
@@ -282,7 +283,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocksTab.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().OnlyHaveTextEdit(string.Empty, (line, startCharacter, line, endCharacter));
             }
         }
@@ -296,7 +297,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
             var src = TestData.GetPath("TestData", "Formatting", "elseBlocksTab.py");
 
             using (var reader = new StreamReader(src)) {
-                var edits = await BlockFormatter.ProvideEdits(reader, position, options);
+                var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), position, options);
                 edits.Should().BeEmpty();
             }
         }
