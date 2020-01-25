@@ -22,6 +22,7 @@ using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
@@ -62,7 +63,7 @@ c = C()
 c.method(1, 2)
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(4, 5), out _);
             reference.Should().NotBeNull();
@@ -115,7 +116,7 @@ class child(base):
         self.test
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(9, 15), out _);
             reference.Should().NotBeNull();
@@ -152,7 +153,7 @@ class D(C):
             var testMod = rdt.OpenDocument(testModPath, testModCode);
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await testMod.GetAnalysisAsync();
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(6, 14), out _);
             reference.Should().NotBeNull();
@@ -191,7 +192,7 @@ class D(C):
             var testMod = rdt.OpenDocument(testModPath, testModCode);
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await testMod.GetAnalysisAsync();
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(6, 17), out _);
             reference.Should().NotBeNull();
@@ -232,7 +233,7 @@ class D(C):
             var testMod = rdt.OpenDocument(testModPath, code);
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await testMod.GetAnalysisAsync();
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             // Goto on Dad's super().dowork() should jump to Mom's
             var reference = ds.FindDefinition(analysis, new SourceLocation(9, 33), out _);
@@ -251,7 +252,7 @@ import logging
 logging.info('')
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 9), out _);
             reference.Should().BeNull();
@@ -279,7 +280,7 @@ import logging as log
 log
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 10), out _);
             reference.Should().NotBeNull();
@@ -301,7 +302,7 @@ log
         public async Task GotoModuleSourceFromImport() {
             const string code = @"from logging import A";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(1, 7), out _);
             reference.Should().NotBeNull();
@@ -317,7 +318,7 @@ from MultiValues import t
 x = t
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 5), out _);
             reference.Should().NotBeNull();
@@ -353,7 +354,7 @@ x = t
         public async Task GotoModuleSourceFromImportAs() {
             const string code = @"from logging import RootLogger as rl";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(1, 23), out _);
             reference.Should().NotBeNull();
@@ -369,7 +370,7 @@ from logging import critical as crit
 x = crit
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 6), out _);
             reference.Should().NotBeNull();
@@ -400,7 +401,7 @@ class A(object):
 ";
             var analysis = await GetAnalysisAsync(code);
 
-            var ds1 = new DefinitionSource(Services);
+            var ds1 = new DefinitionSourceLspAdapter(Services);
             var reference = ds1.FindDefinition(analysis, new SourceLocation(2, 12), out _);
             reference.Should().BeNull();
 
@@ -427,7 +428,7 @@ class A(object):
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await submod.GetAnalysisAsync(Timeout.Infinite);
 
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
             var reference = ds.FindDefinition(analysis, new SourceLocation(1, 18), out _);
             reference.Should().NotBeNull();
             reference.uri.Should().Be(modPath);
@@ -448,7 +449,7 @@ def X(): ...
 ");
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await modA.GetAnalysisAsync(Timeout.Infinite);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(1, 7), out _);
             reference.Should().NotBeNull();
@@ -465,7 +466,7 @@ def X(): ...
         [TestMethod, Priority(0)]
         public async Task EmptyAnalysis() {
             var analysis = await GetAnalysisAsync(string.Empty);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(new EmptyAnalysis(Services, analysis.Document), new SourceLocation(1, 1), out _);
             reference.Should().BeNull();
@@ -481,7 +482,7 @@ import re
 x = re.compile(r'hello', re.IGNORECASE)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 10), out _);
             reference.Should().NotBeNull();
@@ -497,7 +498,7 @@ import helper
 helper.message
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 11), out _);
             reference.Should().NotBeNull();
@@ -533,7 +534,7 @@ class MainClass:
             await analyzer.WaitForCompleteAnalysisAsync();
 
             var analysis = await doc.GetAnalysisAsync(Timeout.Infinite);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(9, 27), out _);
             reference.Should().NotBeNull();
@@ -554,7 +555,7 @@ def f(a, b):
 pt = Point(1, 2)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(7, 14), out _);
             reference.Should().NotBeNull();
@@ -570,7 +571,7 @@ print(os.path.basename('a/b/c'))
 print(os_path.basename('a/b/c'))
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 9), out _);
             reference.Should().NotBeNull();
@@ -627,7 +628,7 @@ class MyTestCase(TestCase):
         self.assertNotEqual(value, 1)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(6, 24), out _);
             reference.Should().NotBeNull();
@@ -643,7 +644,7 @@ import datetime
 x = datetime.datetime.day
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 15), out _);
             reference.Should().NotBeNull();
@@ -671,7 +672,7 @@ from other import a, b, c
             var testMod = rdt.OpenDocument(testModPath, testModCode);
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await testMod.GetAnalysisAsync();
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 19), out _);
             reference.Should().NotBeNull();
@@ -695,7 +696,7 @@ from other import a, b, c
 A
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 1), out _);
             reference.Should().BeNull();
         }
@@ -706,7 +707,7 @@ A
 from nonexistent import some
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
             var reference = ds.FindDefinition(analysis, new SourceLocation(2, 26), out _);
             reference.Should().BeNull();
         }
@@ -718,7 +719,7 @@ def func(a, b):
     return a+b
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DefinitionSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 12), out _);
             reference.range.Should().Be(1, 9, 1, 10);
         }
