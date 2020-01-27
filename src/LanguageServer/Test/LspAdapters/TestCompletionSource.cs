@@ -1,20 +1,12 @@
 ﻿using Microsoft.Python.Analysis;
-using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Modules;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Completion;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Tests.LanguageServer;
-using Microsoft.Python.Parsing.Tests;
-using Microsoft.VisualStudio.Threading;
-using System;
-using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using UnitTests.LanguageServerClient;
-using UnitTests.LanguageServerClient.Mocks;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
@@ -66,47 +58,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             ).WaitAndUnwrapExceptions();
 
             return new CompletionResult(res.items);
-           // }
         }
-
-
-        //private static async Task<Uri> OpenDocumentAsync(PythonLanguageClient client, string sourcePath) {
-        //    var uri = new Uri(sourcePath, UriKind.Absolute);
-        //    var openDocParams = new LSP.DidOpenTextDocumentParams() {
-        //        TextDocument = new LSP.TextDocumentItem() {
-        //            Uri = uri,
-        //            Text = File.ReadAllText(sourcePath),
-        //            Version = 0,
-        //        }
-        //    };
-
-        //    await client.InvokeTextDocumentDidOpenAsync(openDocParams);
-
-        //    return uri;
-        //}
-
-        //private async Task<PythonLanguageClient> CreateClientAsync(InterpreterConfiguration configuration ) {
-
-        //    var contentTypeName = "PythonFile";
-
-        //    configuration = configuration ?? PythonVersions.LatestAvailable;
-
-        //    var clientContext = new PythonLanguageClientContextFixed(
-        //        contentTypeName,
-        //        configuration,
-        //        null,
-        //        Enumerable.Empty<string>()
-        //    );
-
-        //    var broker = new MockLanguageClientBroker();
-        //    await PythonLanguageClient.EnsureLanguageClientAsync(
-        //        null,
-        //        new JoinableTaskContext(),
-        //        clientContext,
-        //        broker
-        //    );
-
-        //    return PythonLanguageClient.FindLanguageClient(contentTypeName);
-        //}
     }
 }
