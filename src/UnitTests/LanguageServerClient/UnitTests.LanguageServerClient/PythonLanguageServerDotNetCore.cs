@@ -174,7 +174,12 @@ namespace UnitTests.LanguageServerClient {
 
         public override void Dispose() {
             if(_process != null) {
-                _process.Kill();
+                try {
+                    _process.Kill();
+                } catch (InvalidOperationException) { }
+                  catch (NotSupportedException) { }
+
+                _process.WaitForExit();
                 _process.Dispose();
                 _process = null;
             }
