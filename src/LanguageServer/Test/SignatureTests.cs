@@ -22,6 +22,7 @@ using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.Parsing.Tests;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
@@ -49,7 +50,7 @@ class C:
 C().method()
 ";
             var analysis = await GetAnalysisAsync(code);
-            var src = new SignatureSource(new PlainTextDocumentationSource(), clientSupportsParameterLabelOffsets);
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource(), clientSupportsParameterLabelOffsets);
 
             var sig = src.GetSignature(analysis, new SourceLocation(6, 12));
             sig.activeSignature.Should().Be(0);
@@ -77,7 +78,7 @@ class C:
 C()
 ";
             var analysis = await GetAnalysisAsync(code);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(6, 3));
             sig.activeSignature.Should().Be(0);
@@ -113,7 +114,7 @@ module1.C()
             await analyzer.WaitForCompleteAnalysisAsync();
             var analysis = await app.GetAnalysisAsync(-1);
 
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(4, 11));
             sig.activeSignature.Should().Be(0);
@@ -140,7 +141,7 @@ boxedstr = Box('str')
 y = boxedstr.get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(11, 18));
             sig.signatures.Should().NotBeNull();
@@ -162,7 +163,7 @@ def tmp(v: 'Dict[str, int]') -> 'Dict[str, int]':
 h = tmp()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 9));
             sig.signatures.Should().NotBeNull();
@@ -179,7 +180,7 @@ def get() -> 'int':
 y = get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 9));
             sig.signatures.Should().NotBeNull();
@@ -196,7 +197,7 @@ def get() -> 'unknown_type':
 y = get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 9));
             sig.signatures.Should().NotBeNull();
@@ -213,7 +214,7 @@ def get(v: 'tmp[unknown_type]') -> 'unknown_type':
 y = get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 9));
             sig.signatures.Should().NotBeNull();
@@ -237,7 +238,7 @@ def get() -> 'int':
 y = get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(7, 18));
             sig.signatures.Should().NotBeNull();
@@ -263,7 +264,7 @@ boxedint = Box()
 x = boxedint.get(5)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(9, 19));
             sig.signatures.Should().NotBeNull();
@@ -284,7 +285,7 @@ boxedint = Box()
 x = boxedint.get(5)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(9, 19));
             sig.signatures.Should().NotBeNull();
@@ -305,7 +306,7 @@ boxedint = Box()
 x = boxedint.get(5)
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(9, 19));
             sig.signatures.Should().NotBeNull();
@@ -329,7 +330,7 @@ boxedint = Box()
 x = boxedint.get()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(11, 18));
             sig.signatures.Should().NotBeNull();
@@ -346,7 +347,7 @@ def f(a, b, /, c, d, *, e, f):
 f()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 3));
             sig.signatures.Should().NotBeNull();
@@ -363,7 +364,7 @@ def hello(a, b=100, c={'a':4}):
 hello()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var src = new SignatureSource(new PlainTextDocumentationSource());
+            var src = new SignatureSourceLspAdapter(new PlainTextDocumentationSource());
 
             var sig = src.GetSignature(analysis, new SourceLocation(5, 7));
             sig.signatures.Should().NotBeNull();
