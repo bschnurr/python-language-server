@@ -191,6 +191,7 @@ namespace UnitTests.LanguageServerClient {
             if (_server == null) {
                 return;
             }
+            _disposables.Add(_server);
 
             InitializationOptions = _server.CreateInitializationOptions(
                 interpreterPath,

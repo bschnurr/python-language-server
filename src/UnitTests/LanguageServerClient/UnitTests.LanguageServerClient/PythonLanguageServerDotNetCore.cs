@@ -32,6 +32,7 @@ namespace UnitTests.LanguageServerClient {
         private readonly JoinableTaskContext _joinableTaskContext;
         private const string ExeName = "Microsoft.Python.LanguageServer.exe";
         private const string DllName = "Microsoft.Python.LanguageServer.dll";
+        private Process _process;
 
         public PythonLanguageServerDotNetCore(IServiceProvider site, JoinableTaskContext joinableTaskContext) {
             //_site = site ?? throw new ArgumentNullException(nameof(site));
@@ -57,12 +58,16 @@ namespace UnitTests.LanguageServerClient {
 
             var info = CreateStartInfo(serverFolderPath);
 
-            var process = new Process {
+            if (_process != null) {
+                throw new Exception("need to dispose of old server first");
+            }
+
+            _process = new Process {
                 StartInfo = info
             };
 
-            if (process.Start()) {
-                return new Connection(process.StandardOutput.BaseStream, process.StandardInput.BaseStream);
+            if (_process.Start()) {
+                return new Connection(_process.StandardOutput.BaseStream, _process.StandardInput.BaseStream);
             }
 
             return null;
@@ -164,6 +169,14 @@ namespace UnitTests.LanguageServerClient {
                 ZipFile.ExtractToDirectory(lsZipFilePath, lsExtractedFolderPath);
             } else {
                 throw new FileNotFoundException("Python Language Server archive file not found.", lsZipFilePath);
+            }
+        }
+
+        public override void Dispose() {
+            if(_process != null) {
+                _process.Kill();
+                _process.Dispose();
+                _process = null;
             }
         }
 

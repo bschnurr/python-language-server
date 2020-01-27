@@ -30,6 +30,7 @@ namespace UnitTests.LanguageServerClient {
     internal class PythonLanguageServerNodejs : PythonLanguageServer {
         private readonly IServiceProvider _site;
         private readonly JoinableTaskContext _joinableTaskContext;
+        private Process _process;
 
         public PythonLanguageServerNodejs(IServiceProvider site, JoinableTaskContext joinableTaskContext) {
             _site = site ?? throw new ArgumentNullException(nameof(site));
@@ -82,12 +83,12 @@ namespace UnitTests.LanguageServerClient {
                 Arguments = serverFilePath,
             };
 
-            var process = new Process {
+            _process = new Process {
                 StartInfo = info
             };
 
-            if (process.Start()) {
-                return new Connection(process.StandardOutput.BaseStream, process.StandardInput.BaseStream);
+            if (_process.Start()) {
+                return new Connection(_process.StandardOutput.BaseStream, _process.StandardInput.BaseStream);
             }
 
             return null;
@@ -168,6 +169,14 @@ namespace UnitTests.LanguageServerClient {
             }
 
             return null;
+        }
+
+        public override void Dispose() {
+            if(_process != null) {
+                _process.Kill();
+                _process.Dispose();
+                _process = null;
+            }
         }
 
         [Serializable]

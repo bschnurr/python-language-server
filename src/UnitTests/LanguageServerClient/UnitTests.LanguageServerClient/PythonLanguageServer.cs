@@ -22,7 +22,7 @@ using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Threading;
 
 namespace UnitTests.LanguageServerClient {
-    public abstract class PythonLanguageServer {
+    public abstract class PythonLanguageServer : IDisposable {
         public static PythonLanguageServer Create(IServiceProvider site, JoinableTaskContext joinableTaskContext, PythonLanguageVersion version) {
             if (PythonLanguageServerNodejs.IsPreferred(version)) {
                 return new PythonLanguageServerNodejs(site, joinableTaskContext);
@@ -34,5 +34,7 @@ namespace UnitTests.LanguageServerClient {
         public abstract Task<Connection> ActivateAsync();
 
         public abstract object CreateInitializationOptions(string interpreterPath, string interpreterVersion, string rootPath, IEnumerable<string> searchPaths);
+
+        public abstract void Dispose();
     }
 }
