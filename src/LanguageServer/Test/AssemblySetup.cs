@@ -49,6 +49,11 @@ namespace Microsoft.Python.LanguageServer.Tests {
                 Environment.SetEnvironmentVariable("PTVS_NODE_SERVER_ENABLED", "0");
                 Environment.SetEnvironmentVariable("PTVS_DOTNETCORE_SERVER_LOCATION", serverFolderPath);
             }
+
+            protected override void AfterTestRun() {
+                PythonLanguageClient.DisposeLanguageClient("PythonFile");
+                base.AfterTestRun();
+            }
         }
     }
 }

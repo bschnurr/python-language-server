@@ -48,7 +48,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
         public RunningDocumentTableLspAdapter(IServiceContainer services, IRunningDocumentTable rdt, PythonLanguageClient client) {
             _services = services;
             _client = client ?? throw new ArgumentNotFoundException(nameof(PythonLanguageClient));
-            _rdt = rdt;
+            _rdt = rdt ?? throw new ArgumentNotFoundException(nameof(IRunningDocumentTable)); ;
         }
 
         public event EventHandler<DocumentEventArgs> Opened {
@@ -93,6 +93,12 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
         public static async Task<Uri> OpenDocumentLspAsync(PythonLanguageClient client, string sourcePath, string content) {
             var uri = new Uri(sourcePath, UriKind.Absolute);
+
+            //var dir = Path.GetDirectoryName(uri.ToAbsolutePath());
+
+            //if (!Directory.Exists(dir)) {
+            //    Directory.CreateDirectory(dir);
+            //}
 
             //File.WriteAllText(uri.ToAbsolutePath(), content);
 
