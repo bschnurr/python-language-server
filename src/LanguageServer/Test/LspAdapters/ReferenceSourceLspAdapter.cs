@@ -14,57 +14,58 @@
 // permissions and limitations under the License.
 
 using System;
-using Microsoft.Python.Analysis;
-using Microsoft.Python.Analysis.Analyzer;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.Core;
 using Microsoft.Python.LanguageServer.Tests.LanguageServer;
-using System.Threading;
+using Microsoft.Python.LanguageServer.Sources;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
-    internal sealed class SignatureSourceLspAdapter {
-        private readonly IDocumentationSource _docSource;
-        private readonly bool _labelOffsetSupport;
 
-        public SignatureSourceLspAdapter(IDocumentationSource docSource, bool labelOffsetSupport = true) {
-            _docSource = docSource;
-            // TODO: deprecate eventually.
-            _labelOffsetSupport = labelOffsetSupport; // LSP 3.14.0+
+namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+
+    internal sealed class ReferenceSourceLspAdapter {
+        private readonly IServiceContainer _services;
+
+        public ReferenceSourceLspAdapter(IServiceContainer services) {
+            _services = services;
         }
 
-        public SignatureHelp GetSignature(IDocumentAnalysis analysis, SourceLocation location) {
-            if (analysis is EmptyAnalysis) {
-                return null;
+        public async Task<Reference[]> FindAllReferencesAsync(Uri uri, SourceLocation location, ReferenceSearchOptions options, CancellationToken cancellationToken = default) {
+            if (uri == null) {
+                return Array.Empty<Reference>();
             }
 
             var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
-            
-            var client = PythonLanguageClient.FindLanguageClient("PythonFile");
-            if(client == null) {
+
+            var client = _services.GetService<PythonLanguageClient>();
+            if (client == null) {
                 throw new NullReferenceException("PythonLanguageClient not found");
             }
 
-            var uri = analysis.Document.Uri;
             cb.SetClient(uri, client);
-
-            //File.WriteAllText(uri.ToAbsolutePath(), analysis.Document.Content);
-            RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), analysis.Document.Content).WaitAndUnwrapExceptions();
 
             // convert SourceLocation to Position
             Position postion = location;
 
             // note: CompletionList is from  Microsoft.Python.LanguageServer.Protocol and not the LSP.CompletionList version
-            var res = cb.RequestAsync(
-                new LSP.LspRequest<LSP.TextDocumentPositionParams, SignatureHelp>(LSP.Methods.TextDocumentSignatureHelpName),
-                new LSP.TextDocumentPositionParams {
+            var res = await cb.RequestAsync(
+                new LSP.LspRequest<LSP.ReferenceParams, Reference[]>(LSP.Methods.TextDocumentReferencesName),
+                new LSP.ReferenceParams {
                     TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
                     Position = new LSP.Position { Line = postion.line, Character = postion.character },
                 },
                 CancellationToken.None
-            ).WaitAndUnwrapExceptions();
+            );
+
+            //fixup uri paths
+            foreach(var reference in res) {
+                reference.uri = new Uri(reference.uri.ToString().Replace("%3A", ":"));
+            }
 
             return res;
         }

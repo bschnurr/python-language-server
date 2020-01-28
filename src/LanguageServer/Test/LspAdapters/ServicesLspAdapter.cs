@@ -27,7 +27,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             var clientContext = new PythonLanguageClientContextFixed(
                 contentTypeName,
                 configuration,
-                null,
+                TestData.GetTestSpecificRootPath(),
                 Enumerable.Empty<string>()
             );
 
