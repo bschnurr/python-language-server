@@ -20,7 +20,7 @@ using FluentAssertions;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Sources;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -51,7 +51,7 @@ y = func(x)
 x = 2
 ";
             var analysis = await GetAnalysisAsync(code);
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(8, 1), "z");
 
             var uri = analysis.Document.Uri;
@@ -90,7 +90,7 @@ y = x
             var analysis = await GetDocumentAnalysisAsync(doc1);
             await GetDocumentAnalysisAsync(doc2);
 
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(7, 10), "z");
 
             wse.changes.Should().HaveCount(2);
@@ -130,7 +130,7 @@ y = x
             var analysis = await GetAnalysisAsync(code);
             var uri1 = analysis.Document.Uri;
 
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(7, 10), "z");
 
             wse.changes.Should().HaveCount(3);
@@ -165,7 +165,7 @@ y = package.x";
             await initPy.GetAnalysisAsync();
             await module.GetAnalysisAsync();
 
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
             var wse = await rs.RenameAsync(initPyUri, new SourceLocation(1, 1), "z");
 
             wse.changes.Should().HaveCount(2);
@@ -193,7 +193,7 @@ y = package.x";
             await initPy.GetAnalysisAsync();
             await module.GetAnalysisAsync();
 
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
             var wse = await rs.RenameAsync(initPyUri, new SourceLocation(1, 1), "z");
 
             wse.changes.Should().HaveCount(2);
@@ -210,7 +210,7 @@ y = package.x";
             const string code = "from sys import path";
 
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
 
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(1, 7), "z");
             wse.Should().BeNull();
@@ -223,7 +223,7 @@ y = package.x";
         public async Task NoRenameInSystemLibrary() {
             const string code = @"from logging import BASIC_FORMAT";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
 
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(1, 10), "z");
             wse.Should().BeNull();
@@ -239,7 +239,7 @@ import Library1
 Library1.make_foo()
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var rs = new RenameSource(Services);
+            var rs = new RenameSourceLspAdapter(Services);
 
             var wse = await rs.RenameAsync(analysis.Document.Uri, new SourceLocation(3, 16), "z");
             wse.Should().BeNull();
