@@ -22,6 +22,7 @@ using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
@@ -51,7 +52,7 @@ y = func(x)
 x = 2
 ";
             var analysis = await GetAnalysisAsync(code);
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(8, 1), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(3);
@@ -103,7 +104,7 @@ c = x";
             await doc2.GetAnalysisAsync();
             await doc3.GetAnalysisAsync();
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(uri1, new SourceLocation(11, 10), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(8);
@@ -159,7 +160,7 @@ y = x
             var uri3 = await TestData.CreateTestSpecificFileAsync("module3.py", mod3Code);
 
             var analysis = await GetAnalysisAsync(code);
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(7, 10), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(7);
@@ -206,7 +207,7 @@ y = x
 
             var analysis = await GetAnalysisAsync(code);
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(7, 10), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(7);
@@ -247,7 +248,7 @@ def baz(quux):
             await TestData.CreateTestSpecificFileAsync("bar.py", barCode);
             var analysis = await GetAnalysisAsync(code);
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(5, 8), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(2);
@@ -285,7 +286,7 @@ b = y
 
             var analysis = await GetDocumentAnalysisAsync(doc1);
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(7, 1), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(3);
@@ -349,7 +350,7 @@ b = y
 
             var analysis = await GetDocumentAnalysisAsync(doc1);
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(7, 1), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(5);
@@ -402,7 +403,7 @@ logging.getLogger()
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await GetDocumentAnalysisAsync(doc);
 
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var refs = await rs.FindAllReferencesAsync(analysis.Document.Uri, new SourceLocation(4, 12), ReferenceSearchOptions.All);
 
             refs.Should().HaveCount(2);
@@ -431,7 +432,7 @@ logging.getLogger()
         [TestMethod, Priority(0)]
         public async Task EmptyAnalysis() {
             await GetAnalysisAsync(string.Empty);
-            var rs = new ReferenceSource(Services);
+            var rs = new ReferenceSourceLspAdapter(Services);
             var references = await rs.FindAllReferencesAsync(null, new SourceLocation(1, 1), ReferenceSearchOptions.All);
             references.Should().BeEmpty();
         }
