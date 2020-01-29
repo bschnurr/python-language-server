@@ -51,7 +51,7 @@ namespace Microsoft.Python.LanguageServer.Implementation {
             };
         }
 
-        private DocumentSymbol MakeDocumentSymbol(HierarchicalSymbol hSym) {
+        internal static DocumentSymbol MakeDocumentSymbol(HierarchicalSymbol hSym) {
             return new DocumentSymbol {
                 name = hSym.Name,
                 detail = hSym.Detail,
@@ -63,7 +63,7 @@ namespace Microsoft.Python.LanguageServer.Implementation {
             };
         }
 
-        private Protocol.SymbolKind ToSymbolKind(Indexing.SymbolKind kind) {
+        private static Protocol.SymbolKind ToSymbolKind(Indexing.SymbolKind kind) {
             switch (kind) {
                 case Indexing.SymbolKind.None:
                     return Protocol.SymbolKind.None;
