@@ -12,9 +12,10 @@ using UnitTests.LanguageServerClient.Mocks;
 using TestUtilities;
 using System.IO;
 using System;
-using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 using System.Threading;
 using Microsoft.Python.Parsing;
+using System.Collections.Generic;
+using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
     public class ServicesLspAdapter {
@@ -109,6 +110,28 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
                 return res;
             }
         }
+
+
+        static internal async Task ConfigurationChangeAsync(PythonLanguageClient client, PythonLanguageServiceProviderCallback cb) {
+            var linting = new Dictionary<string, object> {
+                { "linting", new Dictionary<string, object> {{"enabeld", true }} },
+                { "memory", new Dictionary<string, object> {} }
+            };
+
+            Dictionary<string, object> settings = new Dictionary<string, object> {
+                { "python",  linting}
+            };
+
+            await cb.ConfigurationChangeAsync(
+                client,
+                new LSP.DidChangeConfigurationParams { 
+                    Settings = settings 
+                }, 
+                CancellationToken.None);
+
+            await Task.Delay(1000);
+        }
+
     }
 }
 
