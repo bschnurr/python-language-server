@@ -50,7 +50,7 @@ z = y";
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
                 new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(2, 1, 2, 2)),
                 new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(3, 1, 3, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -61,7 +61,7 @@ z = y";
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 2, 1, 3)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -74,7 +74,7 @@ z = y";
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
                 new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 5, 1, 6)),
                 new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(1, 9, 1, 10)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -101,7 +101,7 @@ else:
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(2, 5, 2, 6)),
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(4, 5, 4, 6)),
                 new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(6, 5, 6, 6)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -120,7 +120,7 @@ finally:
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(2, 5, 2, 6)),
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(4, 5, 4, 6)),
                 new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(6, 5, 6, 6)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -132,7 +132,7 @@ x = 2";
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -143,7 +143,7 @@ x = 2";
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -154,7 +154,7 @@ x = 2";
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("FOO_BAR_3", SymbolKind.Constant, new SourceSpan(1, 1, 1, 10)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -171,7 +171,7 @@ x = 2";
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 13, 1, 14)),
                     new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(2, 5, 2, 6)),
                 }, FunctionKind.Function),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -185,7 +185,7 @@ x = 2";
                     new HierarchicalSymbol("args", SymbolKind.Variable, new SourceSpan(1, 11, 1, 15)),
                     new HierarchicalSymbol("kwargs", SymbolKind.Variable, new SourceSpan(1, 19, 1, 25)),
                 }, FunctionKind.Function),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -196,7 +196,7 @@ x = 2";
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("func", SymbolKind.Function, new SourceSpan(1, 1, 1, 17), new SourceSpan(1, 5, 1, 9), new List<HierarchicalSymbol>(), FunctionKind.Function),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -216,7 +216,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                 new HierarchicalSymbol("osjoin2", SymbolKind.Module, new SourceSpan(4, 31, 4, 38)),
                 new HierarchicalSymbol("osexists", SymbolKind.Module, new SourceSpan(4, 50, 4, 58)),
                 new HierarchicalSymbol("expanduser", SymbolKind.Module, new SourceSpan(4, 60, 4, 70)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -236,7 +236,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("Foo", SymbolKind.Class, new SourceSpan(1, 1, 2, 8), new SourceSpan(1, 7, 1, 10), new List<HierarchicalSymbol>(), FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -250,7 +250,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                 new HierarchicalSymbol("Foo", SymbolKind.Class, new SourceSpan(1, 1, 2, 20), new SourceSpan(1, 7, 1, 10), new[] {
                     new HierarchicalSymbol("CONSTANT", SymbolKind.Constant, new SourceSpan(2, 5, 2, 13)),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -267,7 +267,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(2, 24, 2, 25)),
                     }, FunctionKind.Function),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -280,7 +280,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 2, 1, 3)),
                 new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 6, 1, 7)),
                 new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(1, 9, 1, 10)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -297,7 +297,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(2, 19, 2, 20)),
                     }, FunctionKind.Function),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -314,7 +314,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(2, 22, 2, 23)),
                     }, FunctionKind.Function),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -372,7 +372,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("self", SymbolKind.Variable, new SourceSpan(6, 15, 6, 19)),
                     }, FunctionKind.Property),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -401,7 +401,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("arg", SymbolKind.Variable, new SourceSpan(9, 15, 9, 18)),
                     }, FunctionKind.StaticMethod),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -430,7 +430,7 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
                         new HierarchicalSymbol("cls", SymbolKind.Variable, new SourceSpan(9, 15, 9, 18)),
                     }, FunctionKind.ClassMethod),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -452,7 +452,7 @@ def func2(x, y): ...";
                     new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(5, 11, 5, 12)),
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(5, 14, 5, 15)),
                 }, FunctionKind.Function),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -475,7 +475,7 @@ def func2(x, y): ...";
                         new HierarchicalSymbol("self", SymbolKind.Variable, new SourceSpan(6, 15, 6, 19)),
                     }, FunctionKind.Function),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -500,7 +500,7 @@ def func2(x, y): ...";
                         new HierarchicalSymbol("self", SymbolKind.Variable, new SourceSpan(8, 15, 8, 19)),
                     }, FunctionKind.Property),
                 }, FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -515,7 +515,7 @@ def func2(x, y): ...";
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 15, 1, 16)),
                 }, functionKind: FunctionKind.Function),
                 new HierarchicalSymbol("f", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -536,7 +536,7 @@ else:
                 new HierarchicalSymbol("q", SymbolKind.Variable, new SourceSpan(2, 16, 2, 17)),
                 new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(3, 5, 3, 6)),
                 new HierarchicalSymbol("z", SymbolKind.Variable, new SourceSpan(5, 5, 5, 6)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -551,7 +551,7 @@ else:
                     new HierarchicalSymbol("item", SymbolKind.Variable, new SourceSpan(1, 40, 1, 44)),
                 }),
                 new HierarchicalSymbol("flat_list", SymbolKind.Variable, new SourceSpan(1, 1, 1, 10)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -566,7 +566,7 @@ else:
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 19, 1, 20)),
                 }),
                 new HierarchicalSymbol("d", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -580,7 +580,7 @@ else:
                     new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 13, 1, 14)),
                 }),
                 new HierarchicalSymbol("s", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -595,7 +595,7 @@ else:
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 19, 1, 20)),
                 }),
                 new HierarchicalSymbol("g", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -616,7 +616,7 @@ else:
                     }),
                 }),
                 new HierarchicalSymbol("l", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -630,7 +630,7 @@ else:
                     new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 10, 1, 11)),
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 13, 1, 14)),
                 }, FunctionKind.Function),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -641,7 +641,7 @@ else:
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("Foo", SymbolKind.Class, new SourceSpan(1, 1, 1, 19), new SourceSpan(1, 7, 1, 10), new List<HierarchicalSymbol>(), FunctionKind.Class),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -652,7 +652,7 @@ else:
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -667,7 +667,7 @@ else:
                     new HierarchicalSymbol("y", SymbolKind.Variable, new SourceSpan(1, 16, 1, 17)),
                 }, functionKind: FunctionKind.Function),
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -678,7 +678,7 @@ else:
             var symbols = WalkSymbols(code);
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("x", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2))
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
@@ -693,7 +693,7 @@ if b := a:
             symbols.Should().BeEquivalentToWithStrictOrdering(new[] {
                 new HierarchicalSymbol("a", SymbolKind.Variable, new SourceSpan(1, 1, 1, 2)),
                 new HierarchicalSymbol("b", SymbolKind.Variable, new SourceSpan(2, 4, 2, 5))
-                }.Select(Microsoft.Python.LanguageServer.Implementation.Server.MakeDocumentSymbol).ToArray()
+                }.Select(Implementation.Server.MakeDocumentSymbol).ToArray()
             );
         }
 
