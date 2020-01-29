@@ -65,6 +65,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
                 case Methods.TextDocumentReferencesName:
                 case Methods.TextDocumentOnTypeFormattingName:
                 case Methods.TextDocumentCodeActionName:
+                case Methods.TextDocumentDocumentSymbolName:
                     return await DispatchToLanguageServer(method, param, cancellationToken);
                 default:
                     throw new ArgumentException(method.Name);

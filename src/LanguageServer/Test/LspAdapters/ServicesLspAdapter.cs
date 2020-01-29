@@ -15,6 +15,7 @@ using System;
 using System.Threading;
 using Microsoft.Python.Parsing;
 using System.Collections.Generic;
+using Microsoft.Python.LanguageServer.Indexing;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
@@ -132,6 +133,103 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             await Task.Delay(1000);
         }
 
+
+        static internal DocumentSymbol[] GetDocumentSymbol(string text, PythonLanguageVersion languageVersion) {
+            var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
+
+            var configuration = PythonVersions.GetRequiredCPythonConfiguration(languageVersion);
+
+            using (var client = CreateClientAsync(configuration).WaitAndUnwrapExceptions()) {
+
+                var modulePath = TestData.GetDefaultModulePath();
+                var moduleDirectory = Path.GetDirectoryName(modulePath);
+
+                var uri = new Uri(modulePath);
+                cb.SetClient(uri, client);
+                
+                RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), text).WaitAndUnwrapExceptions();
+
+                var res = cb.RequestAsync(
+                       new LSP.LspRequest<LSP.DocumentSymbolParams, DocumentSymbol[]>(LSP.Methods.TextDocumentDocumentSymbolName),
+                       new LSP.DocumentSymbolParams {
+                           TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                       },
+                       CancellationToken.None
+                   ).WaitAndUnwrapExceptions();
+
+                return res;
+            }
+        }
+
+        private static HierarchicalSymbol MakeHierarchicalSymbol(DocumentSymbol dSym) {
+            return new HierarchicalSymbol(
+                dSym.name,
+                ToSymbolKind(dSym.kind),
+                dSym.range,
+                dSym.selectionRange,
+                dSym.children.Length > 0 ? dSym.children.Select(MakeHierarchicalSymbol).ToList() : null);
+        }
+
+        private static Indexing.SymbolKind ToSymbolKind(Protocol.SymbolKind kind) {
+            switch (kind) {
+                case Protocol.SymbolKind.None:
+                    return Indexing.SymbolKind.None;
+                case Protocol.SymbolKind.File:
+                    return Indexing.SymbolKind.File;
+                case Protocol.SymbolKind.Module:
+                    return Indexing.SymbolKind.Module;
+                case Protocol.SymbolKind.Namespace:
+                    return Indexing.SymbolKind.Namespace;
+                case Protocol.SymbolKind.Package:
+                    return Indexing.SymbolKind.Package;
+                case Protocol.SymbolKind.Class:
+                    return Indexing.SymbolKind.Class;
+                case Protocol.SymbolKind.Method:
+                    return Indexing.SymbolKind.Method;
+                case Protocol.SymbolKind.Property:
+                    return Indexing.SymbolKind.Property;
+                case Protocol.SymbolKind.Field:
+                    return Indexing.SymbolKind.Field;
+                case Protocol.SymbolKind.Constructor:
+                    return Indexing.SymbolKind.Constructor;
+                case Protocol.SymbolKind.Enum:
+                    return Indexing.SymbolKind.Enum;
+                case Protocol.SymbolKind.Interface:
+                    return Indexing.SymbolKind.Interface;
+                case Protocol.SymbolKind.Function:
+                    return Indexing.SymbolKind.Function;
+                case Protocol.SymbolKind.Variable:
+                    return Indexing.SymbolKind.Variable;
+                case Protocol.SymbolKind.Constant:
+                    return Indexing.SymbolKind.Constant;
+                case Protocol.SymbolKind.String:
+                    return Indexing.SymbolKind.String;
+                case Protocol.SymbolKind.Number:
+                    return Indexing.SymbolKind.Number;
+                case Protocol.SymbolKind.Boolean:
+                    return Indexing.SymbolKind.Boolean;
+                case Protocol.SymbolKind.Array:
+                    return Indexing.SymbolKind.Array;
+                case Protocol.SymbolKind.Object:
+                    return Indexing.SymbolKind.Object;
+                case Protocol.SymbolKind.Key:
+                    return Indexing.SymbolKind.Key;
+                case Protocol.SymbolKind.Null:
+                    return Indexing.SymbolKind.Null;
+                case Protocol.SymbolKind.EnumMember:
+                    return Indexing.SymbolKind.EnumMember;
+                case Protocol.SymbolKind.Struct:
+                    return Indexing.SymbolKind.Struct;
+                case Protocol.SymbolKind.Event:
+                    return Indexing.SymbolKind.Event;
+                case Protocol.SymbolKind.Operator:
+                    return Indexing.SymbolKind.Operator;
+                case Protocol.SymbolKind.TypeParameter:
+                    return Indexing.SymbolKind.TypeParameter;
+                default:
+                    throw new NotImplementedException($"{kind} is not a LSP's SymbolKind");
+            }
+        }
     }
 }
 
