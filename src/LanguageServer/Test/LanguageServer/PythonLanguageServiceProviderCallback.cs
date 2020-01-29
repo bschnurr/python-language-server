@@ -64,6 +64,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
                 case Methods.TextDocumentDefinitionName:
                 case Methods.TextDocumentReferencesName:
                 case Methods.TextDocumentOnTypeFormattingName:
+                case Methods.TextDocumentCodeActionName:
                     return await DispatchToLanguageServer(method, param, cancellationToken);
                 default:
                     throw new ArgumentException(method.Name);
@@ -139,6 +140,26 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
             var result = await client.InvokeWithParameterObjectAsync<TOut>(method.Name, param, cancellationToken);
             return result;
         }
+
+        public async Task TextDocumentDidChangeAsync(DidChangeTextDocumentParams param, CancellationToken cancellationToken) {
+            var uri = GetDocumentUri(param);
+            var client = await FindClientAsync(uri);
+            if (client == null) {
+                return;
+            }
+            await client.InvokeTextDocumentDidChangeAsync(param);
+            return;
+        }
+
+        public async Task ConfigurationChangeAsync(PythonLanguageClient client, DidChangeConfigurationParams param, CancellationToken cancellationToken) {
+            if (client == null) {
+                return;
+            }
+            await client.InvokeConfigurationChangeAsync(param);
+            return;
+        }
+
+
 
         private Uri GetDocumentUri<TIn>(TIn param) {
             Uri uri = null;

@@ -237,6 +237,15 @@ namespace UnitTests.LanguageServerClient {
             return _rpc.NotifyWithParameterObjectAsync("textDocument/didChange", request);
         }
 
+        public Task InvokeConfigurationChangeAsync(LSP.DidChangeConfigurationParams request) {
+            if (_rpc == null) {
+                return Task.CompletedTask;
+            }
+
+            return _rpc.NotifyWithParameterObjectAsync("workspace/didChangeConfiguration", request);
+        }
+
+
         public Task<LSP.CompletionList> InvokeTextDocumentCompletionAsync(
             LSP.CompletionParams request,
             CancellationToken cancellationToken = default(CancellationToken)
