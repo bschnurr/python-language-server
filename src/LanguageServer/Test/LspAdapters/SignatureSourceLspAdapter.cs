@@ -19,7 +19,6 @@ using Microsoft.Python.Analysis.Analyzer;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.Core;
-using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using System.Threading;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;

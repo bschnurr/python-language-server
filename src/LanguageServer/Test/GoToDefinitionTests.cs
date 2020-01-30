@@ -338,7 +338,7 @@ from MultiValues import t
 x = t
 ";
             var analysis = await GetAnalysisAsync(code);
-            var ds = new DeclarationSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 5), out _);
             reference.Should().NotBeNull();
@@ -386,7 +386,7 @@ from logging import critical as crit
 x = crit
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var ds = new DeclarationSource(Services);
+            var ds = new DefinitionSourceLspAdapter(Services);
 
             var reference = ds.FindDefinition(analysis, new SourceLocation(3, 6), out _);
             reference.Should().NotBeNull();
@@ -405,7 +405,7 @@ class A(object):
             var reference = ds1.FindDefinition(analysis, new SourceLocation(2, 12), out _);
             reference.Should().BeNull();
 
-            var ds2 = new DeclarationSource(Services);
+            var ds2 = new DefinitionSourceLspAdapter(Services);
             reference = ds2.FindDefinition(analysis, new SourceLocation(2, 12), out _);
             reference.Should().BeNull();
         }

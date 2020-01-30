@@ -22,7 +22,6 @@ using Microsoft.Python.Analysis;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.Core;
 using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
@@ -302,37 +301,35 @@ class A:
         private static void AssertHover(HoverSource hs, IDocumentAnalysis analysis, SourceLocation sourceLocation, string hoverText, SourceSpan? span = null) {
             var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
 
-            using (var client = CreateClientAsync().WaitAndUnwrapExceptions()) {
-                var uri = analysis.Document.Uri;
-                RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content).WaitAndUnwrapExceptions();
+            var client = PythonLanguageClient.FindLanguageClient("PythonFile");
+            var uri = analysis.Document.Uri;
+            RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content).WaitAndUnwrapExceptions();
                 
-                cb.SetClient(uri, client);
+            cb.SetClient(uri, client);
 
-                //convert to LSP postion
-                Position position = sourceLocation;
+            //convert to LSP postion
+            Position position = sourceLocation;
 
-                var hover = cb.RequestAsync(
-                    new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
-                    new LSP.TextDocumentPositionParams {
-                        TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
-                        Position = new LSP.Position { Line = position.line, Character = position.character }
-                    },
-                    CancellationToken.None
-                ).WaitAndUnwrapExceptions();
+            var hover = cb.RequestAsync(
+                new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
+                new LSP.TextDocumentPositionParams {
+                    TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                    Position = new LSP.Position { Line = position.line, Character = position.character }
+                },
+                CancellationToken.None
+            ).WaitAndUnwrapExceptions();
 
 
-                if (hoverText.EndsWith("*")) {
-                    // Check prefix first, but then show usual message for mismatched value
-                    if (!hover.contents.value.StartsWith(hoverText.Remove(hoverText.Length - 1))) {
-                        Assert.AreEqual(hoverText, hover.contents.value);
-                    }
-                } else {
+            if (hoverText.EndsWith("*")) {
+                // Check prefix first, but then show usual message for mismatched value
+                if (!hover.contents.value.StartsWith(hoverText.Remove(hoverText.Length - 1))) {
                     Assert.AreEqual(hoverText, hover.contents.value);
                 }
-                if (span.HasValue) {
-                    hover.range.Should().Be((Range)span.Value);
-                }
-
+            } else {
+                Assert.AreEqual(hoverText, hover.contents.value);
+            }
+            if (span.HasValue) {
+                hover.range.Should().Be((Range)span.Value);
             }
         }
 

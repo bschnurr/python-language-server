@@ -4,18 +4,17 @@ using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Completion;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using System.Threading;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
-    internal class TestCompletionSource {
+    internal class CompletionSourceLspAdapter {
         private readonly CompletionItemSource _itemSource;
         private readonly IServiceContainer _services;
         public static string RootPath;
 
-        public TestCompletionSource(IDocumentationSource docSource, ServerSettings.PythonCompletionOptions completionSettings, IServiceContainer services) {
+        public CompletionSourceLspAdapter(IDocumentationSource docSource, ServerSettings.PythonCompletionOptions completionSettings, IServiceContainer services) {
             _itemSource = new CompletionItemSource(docSource, completionSettings);
             _services = services;
         }

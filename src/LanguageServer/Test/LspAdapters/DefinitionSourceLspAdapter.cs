@@ -3,12 +3,8 @@ using Microsoft.Python.Analysis.Types;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
@@ -44,6 +40,12 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
                ).WaitAndUnwrapExceptions();
 
             definingMember = null;
+
+            //fixup uri paths
+            foreach (var reference in res) {
+                reference.uri = new Uri(reference.uri.ToString().Replace("%3A", ":"));
+            }
+
             return res.FirstOrDefault();
         }
     }

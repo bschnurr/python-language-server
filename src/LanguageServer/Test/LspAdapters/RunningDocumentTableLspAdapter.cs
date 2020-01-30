@@ -15,14 +15,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using Microsoft.Python.Analysis.Analyzer;
 using Microsoft.Python.Analysis.Modules;
 using Microsoft.Python.Core;
-using Microsoft.Python.Core.Collections;
-using Microsoft.Python.Core.Logging;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis;
 using UnitTests.LanguageServerClient;
@@ -93,14 +87,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
         public static async Task<Uri> OpenDocumentLspAsync(PythonLanguageClient client, string sourcePath, string content) {
             var uri = new Uri(sourcePath, UriKind.Absolute);
-
-            //var dir = Path.GetDirectoryName(uri.ToAbsolutePath());
-
-            //if (!Directory.Exists(dir)) {
-            //    Directory.CreateDirectory(dir);
-            //}
-
-            //File.WriteAllText(uri.ToAbsolutePath(), content);
 
             var openDocParams = new LSP.DidOpenTextDocumentParams() {
                 TextDocument = new LSP.TextDocumentItem() {

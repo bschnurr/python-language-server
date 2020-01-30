@@ -1,6 +1,5 @@
 ﻿using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.LanguageServer.Tests.LanguageServer;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;

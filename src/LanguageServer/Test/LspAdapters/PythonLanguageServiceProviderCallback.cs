@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
+namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
     internal class PythonLanguageServiceProviderCallback {
         private readonly IServiceProvider _serviceProvider;
@@ -159,7 +159,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LanguageServer {
             await client.InvokeConfigurationChangeAsync(param);
             return;
         }
-
 
 
         private Uri GetDocumentUri<TIn>(TIn param) {

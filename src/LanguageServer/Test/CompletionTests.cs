@@ -43,12 +43,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestInitialize]
         public void TestInitialize(){
             TestEnvironmentImpl.TestInitialize($"{TestContext.FullyQualifiedTestClassName}.{TestContext.TestName}");
-            TestCompletionSource.RootPath = TestContext.DeploymentDirectory;
+            CompletionSourceLspAdapter.RootPath = TestContext.DeploymentDirectory;
         }
 
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TopLevelVariables() {
             const string code = @"
@@ -61,11 +62,12 @@ class C:
 
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(8, 1));
             comps.Should().HaveLabels("C", "x", "y", "while", "for");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task StringMembers() {
             const string code = @"
@@ -73,11 +75,12 @@ x = 'str'
 x.
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(3, 3));
             comps.Should().HaveLabels(@"isupper", @"capitalize", @"split");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ModuleMembers() {
             const string code = @"
@@ -85,11 +88,12 @@ import datetime
 datetime.datetime.
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(3, 19));
             comps.Should().HaveLabels("now", @"tzinfo", @"ctime");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MembersIncomplete() {
             const string code = @"
@@ -100,7 +104,7 @@ ABC
 ABCDE.me
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(5, 4));
             comps.Should().HaveLabels(@"ABCDE");
 
@@ -108,6 +112,7 @@ ABCDE.me
             comps.Should().HaveLabels("method1");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(PythonLanguageVersion.V36, "value")]
         [DataRow(PythonLanguageVersion.V37, "object")]
         [DataTestMethod]
@@ -118,7 +123,7 @@ class oar(list):
     pass
 ";
             var analysis = await GetAnalysisAsync(code, version);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 9));
 
             result.Should().HaveItem("append")
@@ -126,6 +131,7 @@ class oar(list):
                 .And.HaveInsertTextFormat(InsertTextFormat.PlainText);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task OverrideInit3X() {
             const string code = @"
@@ -137,7 +143,7 @@ class Test(A):
     def __
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(7, 10));
 
             result.Should().HaveItem("__init__")
@@ -145,6 +151,7 @@ class Test(A):
                 .And.HaveInsertTextFormat(InsertTextFormat.PlainText);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(PythonLanguageVersion.V26, "value")]
         [DataRow(PythonLanguageVersion.V27, "value")]
         [DataTestMethod]
@@ -155,7 +162,7 @@ class oar(list):
     pass
 ";
             var analysis = await GetAnalysisAsync(code, version);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 9));
 
             result.Should().HaveItem("append")
@@ -163,6 +170,7 @@ class oar(list):
                 .And.HaveInsertTextFormat(InsertTextFormat.PlainText);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task OverrideInit2X() {
             const string code = @"
@@ -174,7 +182,7 @@ class Test(A):
     def __
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(7, 10));
 
             result.Should().HaveItem("__init__")
@@ -182,6 +190,7 @@ class Test(A):
                 .And.HaveInsertTextFormat(InsertTextFormat.PlainText);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeAtEndOfMethod() {
             const string code = @"
@@ -198,11 +207,12 @@ x.oar(100)
 ";
 
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(4, 8));
             result.Should().HaveItem("a");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeAtEndOfIncompleteMethod() {
             const string code = @"
@@ -215,11 +225,12 @@ x.oar(100)
 ";
 
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(4, 8));
             result.Should().HaveItem("a");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeIntersectionUserDefinedTypes() {
             const string code = @"
@@ -237,12 +248,13 @@ c.
 
 
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(11, 3));
             result.Should().NotContainLabels("fob");
             result.Should().HaveLabels("oar");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false, "B, self")]
         [DataRow(true, "")]
         [DataTestMethod, Priority(0)]
@@ -256,7 +268,7 @@ class B(A):
     def f";
 
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(7, 10));
             result.Should()
@@ -264,6 +276,7 @@ class B(A):
                 .And.NotContainInsertTexts($"foo(self, a, b = None, *args, **kwargs):{Environment.NewLine}    return super({superArgs}).foo(a, b = b, *args, **kwargs)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -271,13 +284,13 @@ class B(A):
             var version = is3X ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X;
 
             var analysis = await GetAnalysisAsync("raise ", version);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
             result.Should().HaveInsertTexts("Exception", "ValueError").And.NotContainInsertTexts("def", "abs");
 
             if (is3X) {
                 analysis = await GetAnalysisAsync("raise Exception from ", PythonVersions.LatestAvailable3X);
-                cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+                cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
                 result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
                 result.Should().HaveInsertTexts("Exception", "ValueError").And.NotContainInsertTexts("def", "abs");
@@ -304,10 +317,11 @@ class B(A):
             result.Should().HaveAnyCompletions();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InExcept() {
             var analysis = await GetAnalysisAsync("try:\n    pass\nexcept ");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 8));
             result.Should().HaveInsertTexts("Exception", "ValueError").And.NotContainInsertTexts("def", "abs");
@@ -337,6 +351,7 @@ class B(A):
                 .And.Subject.ApplicableSpan.Should().Be(3, 18, 3, 19);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AfterDot() {
             const string code = @"
@@ -348,7 +363,7 @@ x.
 x  
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 3));
             result.Should().HaveLabels("real", @"imag").And.NotContainLabels("abs");
@@ -372,10 +387,11 @@ x
             result.Should().HaveLabels("abs").And.NotContainLabels("real", @"imag");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AfterAssign() {
             var analysis = await GetAnalysisAsync("x = x\ny = ");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(2, 4));
             result.Should().HaveLabels("x", "abs");
@@ -384,6 +400,7 @@ x
             result.Should().HaveLabels("x", "abs");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -395,34 +412,37 @@ class Simple(unittest.TestCase):
         self.assertRaises(TypeError).
 ";
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(5, 38));
             result.Should().HaveInsertTexts("exception");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task WithWhitespaceAroundDot() {
             const string code = @"import sys
 sys  .  version
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(2, 7));
             result.Should().HaveLabels("argv");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MarkupKindValid() {
             var analysis = await GetAnalysisAsync("import sys\nsys.\n");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(2, 5));
             result.Completions?.Select(i => i.documentation?.kind).ExcludeDefault()
                 .Should().NotBeEmpty().And.BeSubsetOf(new[] { MarkupKind.PlainText, MarkupKind.Markdown });
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NewType() {
             const string code = @"
@@ -433,12 +453,13 @@ foo: Foo = Foo({ })
 foo.
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(6, 5));
             result.Should().HaveLabels("clear", "copy", "items", "keys", "update", "values");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericListBase() {
             const string code = @"
@@ -450,7 +471,7 @@ def func(a: List[str]):
     pass
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(5, 7));
             result.Should().HaveLabels("clear", "copy", "count", "index", "remove", "reverse");
@@ -459,6 +480,7 @@ def func(a: List[str]):
             result.Should().HaveLabels("capitalize");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericDictBase() {
             const string code = @"
@@ -470,7 +492,7 @@ def func(a: Dict[int, str]):
     pass
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(5, 7));
             result.Should().HaveLabels("keys", "values");
@@ -479,6 +501,7 @@ def func(a: Dict[int, str]):
             result.Should().HaveLabels("capitalize");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericClassMethod() {
             const string code = @"
@@ -500,7 +523,7 @@ boxedstr = Box('str')
 y = boxedstr.
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(14, 14));
             result.Should().HaveItem("get").Which.Should().HaveDocumentation("Box.get() -> int");
@@ -511,6 +534,7 @@ y = boxedstr.
             result.Should().NotContainLabels("capitalize");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericAndRegularBases() {
             const string code = @"
@@ -532,7 +556,7 @@ boxedstr = Box('str')
 y = boxedstr.
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(14, 14));
             result.Should().HaveLabels("append", "index");
@@ -543,6 +567,7 @@ y = boxedstr.
             result.Should().NotContainLabels("capitalize");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRef() {
             const string code = @"
@@ -561,7 +586,7 @@ class C(object):
     def baz(self): pass
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var completionInD = cs.GetCompletions(analysis, new SourceLocation(3, 5));
             var completionInOar = cs.GetCompletions(analysis, new SourceLocation(5, 9));
@@ -576,6 +601,7 @@ class C(object):
             completionForAbc.Should().HaveLabels("baz", "fob");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SimpleGlobals() {
             const string code = @"
@@ -587,7 +613,7 @@ a = x()
 x.abc()
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var objectMemberNames = analysis.Document.Interpreter.GetBuiltinType(BuiltinTypeId.Object).GetMemberNames();
 
             var completion = cs.GetCompletions(analysis, new SourceLocation(7, 1));
@@ -597,6 +623,7 @@ x.abc()
             completionX.Should().HaveLabels(objectMemberNames).And.HaveLabels("abc");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -604,7 +631,7 @@ x.abc()
             var version = is3X ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X;
 
             var analysis = await GetAnalysisAsync("def f(a, b:int, c=2, d:float=None): pass", version);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 5));
             result.Should().HaveNoCompletion();
@@ -635,10 +662,11 @@ x.abc()
             result.Should().HaveLabels("any");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionDefinition_2X() {
             var analysis = await GetAnalysisAsync("@dec" + Environment.NewLine + "def  f(): pass", PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 1));
             result.Should().HaveLabels("any");
@@ -659,10 +687,11 @@ x.abc()
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionDefinition_3X() {
             var analysis = await GetAnalysisAsync("@dec" + Environment.NewLine + "async   def  f(): pass", PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 1));
             result.Should().HaveLabels("any");
@@ -683,6 +712,7 @@ x.abc()
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [TestMethod, Priority(0)]
@@ -690,7 +720,7 @@ x.abc()
             var version = is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X;
 
             var analysis = await GetAnalysisAsync("class C(object, parameter=MC): pass", version);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 8));
             result.Should().HaveNoCompletion();
@@ -729,10 +759,11 @@ x.abc()
             result.Should().HaveLabels("object").And.NotContainLabels(@"metaclass=");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InWithStatement() {
             var analysis = await GetAnalysisAsync("with x as y, z as w: pass");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 6));
             result.Should().HaveAnyCompletions();
@@ -768,7 +799,7 @@ x.abc()
             result.Should().HaveNoCompletion();
         }
 
-
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportInPackage() {
             var module1Path = TestData.GetTestSpecificUri("package", "module1.py");
@@ -786,7 +817,7 @@ x.abc()
             var analysis2 = await module2.GetAnalysisAsync(-1);
             var analysis3 = await module3.GetAnalysisAsync(-1);
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis1, new SourceLocation(1, 16));
             result.Should().OnlyHaveLabels("module2", "sub_package");
@@ -799,6 +830,7 @@ x.abc()
         }
 
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InImport() {
             var code = @"
@@ -807,7 +839,7 @@ from unittest.case import TestCase as TC, TestCase
 ";
 
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(2, 7));
             result.Should().HaveLabels("from", "import", "abs", "dir").And.NotContainLabels("abc");
@@ -885,6 +917,7 @@ pass";
                 .And.Subject.ApplicableSpan.Should().Be(2, 36, 2, 37);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForOverride() {
             const string code = @"
@@ -893,7 +926,7 @@ class A(object):
     def 
 pass";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 9));
             result.Should().HaveNoCompletion();
@@ -905,64 +938,70 @@ pass";
             result.Should().HaveLabels("__init__").And.NotContainLabels("def");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
         public async Task NoCompletionInEllipsis(bool is2x) {
             const string code = "...";
             var analysis = await GetAnalysisAsync(code, is2x ? PythonVersions.LatestAvailable2X : PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 4));
             result.Should().HaveNoCompletion();
         }
 
-
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
         public async Task NoCompletionInString(bool is2x) {
             var analysis = await GetAnalysisAsync("\"str.\"", is2x ? PythonVersions.LatestAvailable2X : PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 6));
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionInOpenString() {
             var analysis = await GetAnalysisAsync("'''.");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 5));
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow("f'.")]
         [DataRow("f'a.")]
         [DataRow("f'a.'")]
         [DataTestMethod, Priority(0)]
         public async Task NoCompletionInFStringConstant(string openFString) {
             var analysis = await GetAnalysisAsync(openFString);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 5));
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionBadImportExpression() {
             var analysis = await GetAnalysisAsync("import os,.");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             cs.GetCompletions(analysis, new SourceLocation(1, 12)); // Should not crash.
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionInComment() {
 
             var analysis = await GetAnalysisAsync("x = 1 #str. more text");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 12));
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -972,12 +1011,13 @@ import os
 os.
 ";
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 4));
             result.Should().HaveLabels("path", @"devnull", "SEEK_SET", @"curdir");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -987,22 +1027,24 @@ import os
 os.path.
 ";
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 9));
             result.Should().HaveLabels("split", @"getsize", @"islink", @"abspath");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInRoot() {
             const string code = "from .";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
             result.Should().HaveNoCompletion();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInRootWithInitPy() {
             var initPyPath = TestData.GetTestSpecificUri("__init__.py");
@@ -1017,11 +1059,12 @@ os.path.
 
             var analysis = await module1.GetAnalysisAsync(-1);
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
             result.Should().OnlyHaveLabels("__dict__", "__file__", "__doc__", "__package__", "__debug__", "__name__", "__path__", "__spec__");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInExplicitPackage() {
             var initPyPath = TestData.GetTestSpecificUri("package", "__init__.py");
@@ -1040,12 +1083,13 @@ os.path.
 
             await analyzer.WaitForCompleteAnalysisAsync();
             var analysis = await module.GetAnalysisAsync(-1);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
             result.Should().HaveLabels("module2", "sub_package", "answer");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromPartialName() {
             var initPyPath = TestData.GetTestSpecificUri("package", "__init__.py");
@@ -1063,7 +1107,7 @@ os.path.
             await module.GetAnalysisAsync(-1);
             var analysis1 = await module1.GetAnalysisAsync(-1);
             var analysis2 = await module2.GetAnalysisAsync(-1);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis1, new SourceLocation(1, 8));
             result.Should().HaveLabels("package").And.NotContainLabels("module2", "sub_package", "answer");
@@ -1071,6 +1115,7 @@ os.path.
             result.Should().HaveLabels("module1", "sub_package", "answer");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInImplicitPackage() {
             var module1 = TestData.GetTestSpecificUri("package", "module1.py");
@@ -1085,12 +1130,13 @@ os.path.
             rdt.OpenDocument(module3, string.Empty);
 
             var analysis = await module.GetAnalysisAsync(-1);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 7));
             result.Should().OnlyHaveLabels("module2", "sub_package");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SubmoduleMember() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1104,12 +1150,13 @@ os.path.
 
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await doc.GetAnalysisAsync(Timeout.Infinite);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(2, 9));
             result.Should().HaveLabels("m1", "m2", "x");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1119,7 +1166,7 @@ from os.path import exists as EX
 E
 ";
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 2));
             result.Should().HaveLabels("EX");
@@ -1128,17 +1175,19 @@ E
             result.Completions.FirstOrDefault(c => c.label == "EX").Should().HaveDocumentation(doc);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoDuplicateMembers() {
             const string code = @"import sy";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 10));
             result.Completions.Count(c => c.label.EqualsOrdinal(@"sys")).Should().Be(1);
             result.Completions.Count(c => c.label.EqualsOrdinal(@"sysconfig")).Should().Be(1);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1149,7 +1198,7 @@ a = A()
 a.
 ";
             var analysis = await GetAnalysisAsync(code, is3x ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var extraMembers = new[] { "mro", "__dict__", @"__weakref__" };
             var result = cs.GetCompletions(analysis, new SourceLocation(4, 3));
             if (is3x) {
@@ -1159,6 +1208,7 @@ a.
             }
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AzureFunctions() {
             const string code = @"
@@ -1176,23 +1226,25 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     $"'azure.functions' package is not installed for Python {ver}, see https://github.com/Microsoft/python-language-server/issues/462");
             }
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(5, 23));
             result.Should().HaveLabels("get");
             result.Completions.First(x => x.label == "get").Should().HaveDocumentation("dict.get*");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InForEnumeration() {
             var analysis = await GetAnalysisAsync(@"
 for a, b in x:
     
 ");
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(3, 4));
             result.Should().HaveLabels("a", "b");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -1201,11 +1253,12 @@ for a, b in x:
             var code = empty ? string.Empty : $"{Path.GetFileNameWithoutExtension(modulePath)}.";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X, null, modulePath);
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, code.Length + 1));
             result.Should().NotContainLabels(analysis.Document.Name);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task OddNamedFile() {
             const string code = @"
@@ -1219,11 +1272,12 @@ sys.
 
             var analysis = await GetDocumentAnalysisAsync(doc);
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var completions = cs.GetCompletions(analysis, new SourceLocation(3, 5));
             completions.Should().HaveLabels("argv", "path", "exit");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FunctionScope() {
             const string code = @"
@@ -1231,12 +1285,13 @@ def func():
     aaa = 1
 a";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(4, 2));
             result.Completions.Select(c => c.label).Should().NotContain("aaa");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task PrivateMembers() {
             const string code = @"
@@ -1250,7 +1305,7 @@ class A:
 A().
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(7, 14));
             result.Completions.Select(c => c.label).Should().Contain("__x").And.NotContain("_A__x");
@@ -1259,6 +1314,7 @@ A().
             result.Completions.Select(c => c.label).Should().NotContain("_A__x").And.NotContain("__x");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ParameterAnnotatedDefault() {
             const string code = @"
@@ -1276,18 +1332,19 @@ def test(x: Foo = func()):
     x.
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(13, 7));
             comps.Should().HaveLabels("name", "z");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AddBrackets() {
             const string code = @"prin";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
 
             ServerSettings.completion.addBrackets = true;
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var comps = cs.GetCompletions(analysis, new SourceLocation(1, 5));
             var print = comps.Completions.FirstOrDefault(x => x.label == "print");
@@ -1301,6 +1358,7 @@ def test(x: Foo = func()):
             print.insertText.Should().Be("print");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClassMemberAccess() {
             const string code = @"
@@ -1319,7 +1377,7 @@ class A:
         
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var comps = cs.GetCompletions(analysis, new SourceLocation(11, 21));
             var names = comps.Completions.Select(c => c.label);
@@ -1330,6 +1388,7 @@ class A:
             names.Should().NotContain(new[] { "x1", "x2", "method1", "method2", "B" });
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromImportPackageNoInitPy() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1342,12 +1401,13 @@ class A:
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await doc.GetAnalysisAsync(Timeout.Infinite);
 
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(1, 18));
             var names = comps.Completions.Select(c => c.label);
             names.Should().Contain(new[] { "sub1" });
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionParameters() {
             const string code = @"
@@ -1369,7 +1429,7 @@ a.method()
 b = B()
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var comps = cs.GetCompletions(analysis, new SourceLocation(12, 18));
             comps.Should().HaveLabels("content=");
@@ -1381,6 +1441,7 @@ b = B()
             comps.Should().HaveLabels("ctorParam=");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task PositionalOnly() {
             const string code = @"
@@ -1389,13 +1450,14 @@ def func(a, b, /, c, d, *, e, f):
 
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.Required_Python38X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(4, 1));
 
             result.Should().HaveItem("func")
                 .Which.Should().HaveDocumentation("func(a, b, /, c, d, *, e, f)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task PositionalOnlyOverride() {
             const string code = @"
@@ -1407,7 +1469,7 @@ class B(A):
     def 
 ";
             var analysis = await GetAnalysisAsync(code, PythonVersions.Required_Python38X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(7, 9));
 
             result.Should().HaveItem("foo")
@@ -1415,17 +1477,18 @@ class B(A):
                 .And.HaveInsertTextFormat(InsertTextFormat.PlainText);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task OnlyOneNone() {
             var analysis = await GetAnalysisAsync("", PythonVersions.Required_Python38X);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 1));
 
             result.Completions.Where(item => item.insertText == "None").Should().HaveCount(1);
         }
 
 
-
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task SingleInheritanceSuperCheckCompletion() {
             const string code = @"
@@ -1440,13 +1503,13 @@ class B(A):
 ";
 
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(9, 11));
 
             result.Completions.Where(item => item.insertText == "base_func").Should().HaveCount(1);
         }
 
-
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod]
         public async Task SingleInheritanceSuperCheckCompletionNoDuplicates() {
             const string code = @"
@@ -1463,13 +1526,14 @@ class C(B):
         super().
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var result = cs.GetCompletions(analysis, new SourceLocation(12, 17));
 
             result.Completions.GroupBy(item => item.insertText).Any(g => g.Count() > 1).Should().BeFalse();
         }
 
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportDotMembers() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1483,12 +1547,13 @@ class C(B):
 
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await doc.GetAnalysisAsync(Timeout.Infinite);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(1, 16));
             result.Should().OnlyHaveLabels("m1", "m2");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClassPrivateMembers() {
             const string code = @"
@@ -1505,7 +1570,7 @@ class Op:
         cls.
 ";
             var analysis = await GetAnalysisAsync(code);
-            var cs = new TestCompletionSource(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
+            var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
 
             var result = cs.GetCompletions(analysis, new SourceLocation(8, 14));
             result.Should().HaveLabels("__EQ", "__NOT_EQ", "__OP_LIST");
