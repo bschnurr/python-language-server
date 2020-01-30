@@ -15,9 +15,7 @@
 
 using Microsoft.Python.Core.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.Threading;
 using System;
-using System.Collections.Generic;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
 
