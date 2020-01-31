@@ -14,13 +14,13 @@
 // permissions and limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Python.Analysis;
 using Microsoft.Python.Analysis.Analyzer;
+using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.Core;
-using System.Threading;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 

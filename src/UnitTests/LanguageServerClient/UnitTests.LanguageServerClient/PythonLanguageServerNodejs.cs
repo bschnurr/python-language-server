@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Python.Parsing;
-using Microsoft.Python.Parsing.Ast;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;

@@ -16,10 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Python.Analysis;
+using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis.Modules;
 using Microsoft.Python.Core;
-using Microsoft.Python.Analysis.Documents;
-using Microsoft.Python.Analysis;
 using NSubstitute.Exceptions;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;

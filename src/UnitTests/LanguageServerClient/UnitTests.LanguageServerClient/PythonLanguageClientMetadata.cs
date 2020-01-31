@@ -14,8 +14,8 @@
 // See the Apache Version 2.0 License for specific language governing
 // permissions and limitations under the License.
 
-using Microsoft.VisualStudio.LanguageServer.Client;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.LanguageServer.Client;
 
 namespace UnitTests.LanguageServerClient {
     internal class PythonLanguageClientMetadata : ILanguageClientMetadata {

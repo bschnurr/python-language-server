@@ -20,13 +20,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Core.Disposables;
 using Microsoft.Python.Parsing;
 using Microsoft.VisualStudio.LanguageServer.Client;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
-using UnitTests.LanguageServerClient.Mocks;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 using Task = System.Threading.Tasks.Task;
 
