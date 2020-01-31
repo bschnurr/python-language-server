@@ -23,7 +23,6 @@ using FluentAssertions;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core.Idle;
 using Microsoft.Python.Core.IO;
-using Microsoft.Python.Core.Services;
 using Microsoft.Python.LanguageServer.Indexing;
 using Microsoft.Python.Parsing;
 using Microsoft.Python.Parsing.Ast;

@@ -39,6 +39,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
             TestEnvironmentImpl.TestCleanup();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAssignments() {
             var code = @"x = 1
@@ -54,6 +56,8 @@ z = y";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAssignmentsParenthesized() {
             var code = @"(x) = 1";
@@ -65,6 +69,8 @@ z = y";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerMultipleAssignments() {
             var code = @"x = y = z = 1";
@@ -78,6 +84,8 @@ z = y";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerUnderscore() {
             var code = @"_ = 1";
@@ -86,6 +94,8 @@ z = y";
             symbols.Should().BeEmpty();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerIfStatement() {
             var code = @"if foo():
@@ -105,6 +115,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerTryExceptFinally() {
             var code = @"try:
@@ -124,6 +136,8 @@ finally:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerReassign() {
             var code = @"x = 1
@@ -136,6 +150,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAugmentedAssign() {
             var code = @"x += 1";
@@ -147,6 +163,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerTopLevelConstant() {
             var code = @"FOO_BAR_3 = 1234";
@@ -158,6 +176,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerFunction() {
             var code = @"def func(x, y):
@@ -175,6 +195,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerFunctionStarredArgs() {
             var code = @"def func(*args, **kwargs): ...";
@@ -189,6 +211,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerFunctionUnderscoreArg() {
             var code = @"def func(_): ...";
@@ -200,6 +224,8 @@ x = 2";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerImports() {
             var code = @"import sys
@@ -220,6 +246,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerImportFromFuture() {
             var code = @"from __future__ import print_function";
@@ -228,6 +256,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             symbols.Should().BeEmpty();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerClass() {
             var code = @"class Foo(object):
@@ -240,6 +270,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerClassConstant() {
             var code = @"class Foo(object):
@@ -254,6 +286,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerConstructor() {
             var code = @"class Foo(object):
@@ -271,6 +305,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerComplexAssignmentLeftHand() {
             var code = @"(x, [y, z]) = (1, [2, 3])";
@@ -284,6 +320,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerMethod() {
             var code = @"class Foo(object):
@@ -301,6 +339,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerDoubleUnderscoreMethod() {
             var code = @"class Foo(object):
@@ -318,6 +358,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerProperties() {
             var code = @"class Foo(object):
@@ -353,6 +395,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAbcProperties() {
             var code = @"class Foo(object):
@@ -376,6 +420,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerStaticMethods() {
             var code = @"class Foo(object):
@@ -405,6 +451,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerClassMethods() {
             var code = @"class Foo(object):
@@ -434,6 +482,8 @@ from os.path import ( join as osjoin2, exists as osexists, expanduser )
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerTopLevelFunctionDecorator() {
             var code = @"@something
@@ -456,6 +506,8 @@ def func2(x, y): ...";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerClassFunctionDecorator() {
             var code = @"class Foo(object):
@@ -479,6 +531,8 @@ def func2(x, y): ...";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerClassFunctionMultiDecorator() {
             var code = @"class Foo(object):
@@ -504,6 +558,8 @@ def func2(x, y): ...";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerLambda() {
             var code = @"f = lambda x, y: x + y";
@@ -519,6 +575,8 @@ def func2(x, y): ...";
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerForLoop() {
             var code = @"z = False
@@ -540,6 +598,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerListComprehension() {
             var code = @"flat_list = [item for sublist in l for item in sublist]";
@@ -555,6 +615,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerDictionaryComprehension() {
             var code = @"d = { x: y for x, y in zip(range(10), range(10)) }";
@@ -570,6 +632,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerSetComprehension() {
             var code = @"s = { x for x in range(10) }";
@@ -584,6 +648,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerGenerator() {
             var code = @"g = (x + y for x, y in zip(range(10), range(10)))";
@@ -599,6 +665,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerNestedListComprehension() {
             var code = @"l = [
@@ -620,6 +688,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerIncompleteFunction() {
             var code = @"def func(x, y):";
@@ -634,6 +704,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerIncompleteClass() {
             var code = @"class Foo(object):";
@@ -645,6 +717,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerIncompleteAssign() {
             var code = @"x =";
@@ -656,6 +730,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAugmentedAssignLambda() {
             var code = @"x += lambda x, y: x + y";
@@ -671,6 +747,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerAnnotatedAssignments() {
             var code = @"x:int = 1";
@@ -682,6 +760,8 @@ else:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerNamedExpression() {
             var code = @"a = 123
@@ -697,6 +777,8 @@ if b := a:
             );
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void WalkerNoNameFunction() {
             var code = @"def ():";

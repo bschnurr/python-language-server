@@ -212,7 +212,7 @@ namespace UnitTests.LanguageServerClient {
         }
 
         public void Dispose() {
-            _disposables.TryDispose();
+             _disposables.TryDispose();
         }
 
         public Task InvokeTextDocumentDidOpenAsync(LSP.DidOpenTextDocumentParams request) {
