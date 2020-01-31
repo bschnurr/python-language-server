@@ -50,6 +50,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [DataTestMethod, Priority(0)]
         [DataRow(true)]
         [DataRow(false)]
+        [Ignore]
         public async Task MethodSignature(bool clientSupportsParameterLabelOffsets) {
             const string code = @"
 class C:

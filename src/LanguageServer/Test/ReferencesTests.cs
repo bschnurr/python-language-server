@@ -278,6 +278,7 @@ def baz(quux):
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task RemoveReference() {
             const string code1 = @"
 x = 1
@@ -337,6 +338,7 @@ b = y
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task RemoveReferenceNested() {
             const string code1 = @"
 x = 1
@@ -411,6 +413,7 @@ b = y
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task UpdateReferencesOnEdit() {
             const string code = @"
 import logging

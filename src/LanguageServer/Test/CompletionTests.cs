@@ -301,6 +301,7 @@ class B(A):
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
+        [Ignore]
         public async Task InRaise(bool is3X) {
             var version = is3X ? PythonVersions.LatestAvailable3X : PythonVersions.LatestAvailable2X;
 
@@ -341,6 +342,7 @@ class B(A):
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task InExcept() {
             var analysis = await GetAnalysisAsync("try:\n    pass\nexcept ");
             var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
@@ -873,6 +875,7 @@ x.abc()
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task InImport() {
             var code = @"
 import unittest.case as C, unittest
@@ -1145,6 +1148,7 @@ os.path.
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task FromPartialName() {
             var initPyPath = TestData.GetTestSpecificUri("package", "__init__.py");
             var module1Path = TestData.GetTestSpecificUri("package", "module1.py");
@@ -1406,6 +1410,7 @@ def test(x: Foo = func()):
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task AddBrackets() {
             const string code = @"prin";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);

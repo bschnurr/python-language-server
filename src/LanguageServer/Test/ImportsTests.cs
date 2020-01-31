@@ -199,6 +199,7 @@ VALUE = 42");
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task UncSearchPaths() {
             const string module1Path = @"q:\Folder\package\module1.py";
             const string module2Path = @"\\machine\share\package\module2.py";
@@ -243,6 +244,7 @@ module2.";
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task UserSearchPathsInsideWorkspace() {
             var folder2 = TestData.GetTestSpecificPath("src");
             var folder1 = TestData.GetTestSpecificPath("src", "virtualenv");
@@ -507,6 +509,7 @@ a3.";
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task LoopImports_Variables1() {
             const string module1Code = @"
 class A1: 
@@ -564,6 +567,7 @@ z.";
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task LoopImports_Variables2() {
             const string module1Code = @"
 from module3 import A3
@@ -679,6 +683,7 @@ module1.";
         [DataRow(@"from package import sub_package; from package.sub_package import module")]
         [DataRow(@"from package.sub_package import module; from package import sub_package")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task FromImport_ModuleAffectsPackage(string appCodeImport) {
             var appCode1 = appCodeImport + Environment.NewLine + "sub_package.";
             var appCode2 = appCodeImport + Environment.NewLine + "sub_package.module.";
@@ -940,6 +945,7 @@ B().
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task Python2XRelativeImportInRoot() {
             var folder1 = TestData.GetTestSpecificPath("folder1");
             var folder2 = TestData.GetTestSpecificPath("folder2");
@@ -979,6 +985,7 @@ module.";
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task SecondRootIsPartOfFirstRoot() {
             var folder1 = TestData.GetTestSpecificPath("folder");
             var folder2 = TestData.GetTestSpecificPath("folder2");
