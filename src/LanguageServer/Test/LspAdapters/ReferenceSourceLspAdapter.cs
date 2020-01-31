@@ -38,17 +38,19 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
                 return Array.Empty<Reference>();
             }
 
-            var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
-
             var client = _services.GetService<PythonLanguageClient>();
             if (client == null) {
                 throw new NullReferenceException("PythonLanguageClient not found");
             }
-
+            
+            var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
             cb.SetClient(uri, client);
 
             // convert SourceLocation to Position
             Position postion = location;
+
+            // hack to wait for server analysis 
+            await Task.Delay(1000);
 
             // note: CompletionList is from  Microsoft.Python.LanguageServer.Protocol and not the LSP.CompletionList version
             var res = await cb.RequestAsync(

@@ -6,6 +6,7 @@ using Microsoft.Python.LanguageServer.Protocol;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
@@ -17,29 +18,15 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
         }
 
         public Reference FindDefinition(IDocumentAnalysis analysis, SourceLocation location, out ILocatedMember definingMember) {
+            definingMember = null;
+
             var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
 
-            //using (var client = CreateClientAsync(analysis.Document.Interpreter?.Configuration).WaitAndUnwrapExceptions()) {
             var client = _services.GetService<PythonLanguageClient>();
             var uri = analysis.Document.Uri;
             cb.SetClient(uri, client);
 
-            //File.WriteAllText(uri.ToAbsolutePath(), analysis.Document.Content);
-            RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), analysis.Document.Content).WaitAndUnwrapExceptions();
-
-            // convert SourceLocation to Position
-            Position postion = location;
-
-            var res = cb.RequestAsync(
-                   new LSP.LspRequest<LSP.TextDocumentPositionParams, Reference[]>(LSP.Methods.TextDocumentDefinitionName),
-                   new LSP.TextDocumentPositionParams {
-                       TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
-                       Position = new LSP.Position { Line = postion.line, Character = postion.character }
-                   },
-                   CancellationToken.None
-               ).WaitAndUnwrapExceptions();
-
-            definingMember = null;
+            Reference[] res = FindDefintionAsync(analysis, location, cb, client, uri).WaitAndUnwrapExceptions();
 
             //fixup uri paths
             foreach (var reference in res) {
@@ -47,6 +34,26 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             }
 
             return res.FirstOrDefault();
+        }
+
+        private static async Task<Reference[]> FindDefintionAsync(IDocumentAnalysis analysis, SourceLocation location, PythonLanguageServiceProviderCallback cb, PythonLanguageClient client, Uri uri) {
+            
+            await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), analysis.Document.Content);
+
+            await Task.Delay(1000);
+
+            // convert SourceLocation to Position
+            Position postion = location;
+
+            var res = await cb.RequestAsync(
+                   new LSP.LspRequest<LSP.TextDocumentPositionParams, Reference[]>(LSP.Methods.TextDocumentDefinitionName),
+                   new LSP.TextDocumentPositionParams {
+                       TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                       Position = new LSP.Position { Line = postion.line, Character = postion.character }
+                   },
+                   CancellationToken.None
+               );
+            return res;
         }
     }
 }
