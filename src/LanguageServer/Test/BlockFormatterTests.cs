@@ -62,6 +62,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public void TooShort() {
             using (var reader = new StringReader("a + b")) {
                 Func<Task<TextEdit[]>> func = () => ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), new Position { line = 1, character = 4 }, new FormattingOptions());

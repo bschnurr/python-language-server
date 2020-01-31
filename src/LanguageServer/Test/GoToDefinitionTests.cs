@@ -336,6 +336,7 @@ log
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task GotoDefitionFromImport() {
             const string code = @"
 from MultiValues import t
@@ -358,6 +359,7 @@ x = t
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task GotoDeclarationFromImport() {
             const string code = @"
 from MultiValues import t
@@ -412,6 +414,7 @@ x = crit
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task GotoDeclarationFromImportAs() {
             const string code = @"
 from logging import critical as crit
@@ -504,6 +507,7 @@ def X(): ...
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task EmptyAnalysis() {
             var analysis = await GetAnalysisAsync(string.Empty);
             var ds = new DefinitionSourceLspAdapter(Services);
@@ -536,6 +540,7 @@ x = re.compile(r'hello', re.IGNORECASE)
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task Constant() {
             const string code = @"
 import helper

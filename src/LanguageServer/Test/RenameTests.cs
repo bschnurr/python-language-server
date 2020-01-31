@@ -240,6 +240,7 @@ y = package.x";
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
+        [Ignore]
         public async Task NoRenameInSystemLibrary() {
             const string code = @"from logging import BASIC_FORMAT";
             var analysis = await GetAnalysisAsync(code, PythonVersions.LatestAvailable3X);
