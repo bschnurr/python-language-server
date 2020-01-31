@@ -23,12 +23,12 @@ using Microsoft.VisualStudio.Threading;
 
 namespace UnitTests.LanguageServerClient {
     public abstract class PythonLanguageServer : IDisposable {
-        public static PythonLanguageServer Create(IServiceProvider site, JoinableTaskContext joinableTaskContext, PythonLanguageVersion version) {
+        public static PythonLanguageServer Create(JoinableTaskContext joinableTaskContext, PythonLanguageVersion version) {
             if (PythonLanguageServerNodejs.IsPreferred(version)) {
-                return new PythonLanguageServerNodejs(site, joinableTaskContext);
+                return new PythonLanguageServerNodejs(joinableTaskContext);
             }
 
-            return new PythonLanguageServerDotNetCore(site, joinableTaskContext);
+            return new PythonLanguageServerDotNetCore(joinableTaskContext);
         }
 
         public abstract Task<Connection> ActivateAsync();

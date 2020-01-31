@@ -28,14 +28,12 @@ using Task = System.Threading.Tasks.Task;
 
 namespace UnitTests.LanguageServerClient {
     public class PythonLanguageServerDotNetCore : PythonLanguageServer {
-        private readonly IServiceProvider _site;
         private readonly JoinableTaskContext _joinableTaskContext;
         private const string ExeName = "Microsoft.Python.LanguageServer.exe";
         private const string DllName = "Microsoft.Python.LanguageServer.dll";
         private Process _process;
 
-        public PythonLanguageServerDotNetCore(IServiceProvider site, JoinableTaskContext joinableTaskContext) {
-            //_site = site ?? throw new ArgumentNullException(nameof(site));
+        public PythonLanguageServerDotNetCore(JoinableTaskContext joinableTaskContext) {
             _joinableTaskContext = joinableTaskContext ?? throw new ArgumentNullException(nameof(joinableTaskContext));
         }
 

@@ -36,7 +36,6 @@ namespace UnitTests.LanguageServerClient {
     /// See documentation at https://docs.microsoft.com/en-us/visualstudio/extensibility/adding-an-lsp-extension?view=vs-2019
     /// </remarks>
     public class PythonLanguageClient : ILanguageClient, ILanguageClientCustomMessage2, IDisposable {
-        private readonly IServiceProvider _site;
         private readonly PythonLanguageVersion _version;
         private readonly JoinableTaskContext _joinableTaskContext;
         private readonly IPythonLanguageClientContext _clientContext;
@@ -47,11 +46,9 @@ namespace UnitTests.LanguageServerClient {
         private static readonly List<PythonLanguageClient> _languageClients = new List<PythonLanguageClient>();
 
         private PythonLanguageClient(
-            IServiceProvider site,
             JoinableTaskContext joinableTaskContext,
             IPythonLanguageClientContext clientContext
         ) {
-          //  _site = site ?? throw new ArgumentNullException(nameof(site));
             _joinableTaskContext = joinableTaskContext ?? throw new ArgumentNullException(nameof(joinableTaskContext));
             _clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
             _disposables = new DisposableBag(GetType().Name);
@@ -66,11 +63,10 @@ namespace UnitTests.LanguageServerClient {
                 _disposables.Add(disposable);
             }
 
-            CustomMessageTarget = new PythonLanguageClientCustomTarget(site);
+            CustomMessageTarget = new PythonLanguageClientCustomTarget();
         }
 
         public static async Task EnsureLanguageClientAsync(
-            IServiceProvider site,
             JoinableTaskContext joinableTaskContext,
             IPythonLanguageClientContext clientContext,
             ILanguageClientBroker broker
@@ -86,7 +82,7 @@ namespace UnitTests.LanguageServerClient {
             PythonLanguageClient client = null;
             lock (_languageClients) {
                 if (!_languageClients.Any(lc => lc.ContentTypeName == clientContext.ContentTypeName)) {
-                    client = new PythonLanguageClient(site, joinableTaskContext, clientContext);
+                    client = new PythonLanguageClient(joinableTaskContext, clientContext);
                     _languageClients.Add(client);
                 }
             }
@@ -185,7 +181,7 @@ namespace UnitTests.LanguageServerClient {
                 langVersion = PythonLanguageVersion.None;
             }
 
-            _server = PythonLanguageServer.Create(_site, _joinableTaskContext, langVersion);
+            _server = PythonLanguageServer.Create(_joinableTaskContext, langVersion);
             if (_server == null) {
                 return;
             }

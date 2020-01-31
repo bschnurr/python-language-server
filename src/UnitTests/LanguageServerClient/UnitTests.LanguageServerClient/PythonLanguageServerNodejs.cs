@@ -27,12 +27,10 @@ using Task = System.Threading.Tasks.Task;
 
 namespace UnitTests.LanguageServerClient {
     internal class PythonLanguageServerNodejs : PythonLanguageServer {
-        private readonly IServiceProvider _site;
         private readonly JoinableTaskContext _joinableTaskContext;
         private Process _process;
 
-        public PythonLanguageServerNodejs(IServiceProvider site, JoinableTaskContext joinableTaskContext) {
-            _site = site ?? throw new ArgumentNullException(nameof(site));
+        public PythonLanguageServerNodejs(JoinableTaskContext joinableTaskContext) {
             _joinableTaskContext = joinableTaskContext ?? throw new ArgumentNullException(nameof(joinableTaskContext));
         }
 

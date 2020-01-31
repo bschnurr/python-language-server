@@ -52,7 +52,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
             var broker = new MockLanguageClientBroker();
             await PythonLanguageClient.EnsureLanguageClientAsync(
-                null,
                 new JoinableTaskContext(),
                 clientContext,
                 broker

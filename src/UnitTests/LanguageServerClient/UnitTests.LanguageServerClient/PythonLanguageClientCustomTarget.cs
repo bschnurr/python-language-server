@@ -22,10 +22,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace UnitTests.LanguageServerClient {
     internal class PythonLanguageClientCustomTarget {
-        private readonly IServiceProvider _site;
 
-        public PythonLanguageClientCustomTarget(IServiceProvider site) {
-           // _site = site ?? throw new ArgumentNullException(nameof(site));
+        public PythonLanguageClientCustomTarget() {
+           
         }
 
         [JsonRpcMethod("telemetry/event")]
