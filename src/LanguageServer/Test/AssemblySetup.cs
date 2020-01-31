@@ -16,6 +16,7 @@
 using Microsoft.Python.Core.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
 
@@ -50,6 +51,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
 
             protected override void AfterTestRun() {
                 PythonLanguageClient.DisposeLanguageClient("PythonFile");
+                var root = TestData.GetTestSpecificRootPath();
+                Directory.Delete(root, recursive: true);
                 base.AfterTestRun();
             }
         }

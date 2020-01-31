@@ -617,6 +617,10 @@ z.M3().
             await analyzer.WaitForCompleteAnalysisAsync();
             var analysis = await app.GetAnalysisAsync(-1);
 
+            // hack to add aditional wait time for the server
+            rdt.OpenDocument(analysis.Document.Uri, analysis.Document.Content);
+            await Task.Delay(1000);
+
             var cs = new CompletionSourceLspAdapter(new PlainTextDocumentationSource(), ServerSettings.completion, Services);
             var comps = cs.GetCompletions(analysis, new SourceLocation(5, 3));
             comps.Should().HaveLabels("M1");

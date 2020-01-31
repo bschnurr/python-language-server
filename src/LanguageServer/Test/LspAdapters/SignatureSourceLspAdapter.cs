@@ -14,6 +14,7 @@
 // permissions and limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.Python.Analysis;
 using Microsoft.Python.Analysis.Analyzer;
 using Microsoft.Python.Core.Text;
@@ -40,31 +41,37 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             }
 
             var cb = PythonLanguageServiceProviderCallback.CreateTestInstance();
-            
+
             var client = PythonLanguageClient.FindLanguageClient("PythonFile");
-            if(client == null) {
+            if (client == null) {
                 throw new NullReferenceException("PythonLanguageClient not found");
             }
 
             var uri = analysis.Document.Uri;
             cb.SetClient(uri, client);
+            SignatureHelp res = GetDocumentSignatureHelpAsync(analysis, location, cb, client, uri).WaitAndUnwrapExceptions();
 
-            //File.WriteAllText(uri.ToAbsolutePath(), analysis.Document.Content);
-            RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), analysis.Document.Content).WaitAndUnwrapExceptions();
+            return res;
+        }
+
+        private static async Task<SignatureHelp> GetDocumentSignatureHelpAsync(IDocumentAnalysis analysis, SourceLocation location, PythonLanguageServiceProviderCallback cb, PythonLanguageClient client, Uri uri) {
+            await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.ToAbsolutePath(), analysis.Document.Content);
+
+            // hack to wait for server analysis 
+            await Task.Delay(1000);
 
             // convert SourceLocation to Position
             Position postion = location;
 
             // note: CompletionList is from  Microsoft.Python.LanguageServer.Protocol and not the LSP.CompletionList version
-            var res = cb.RequestAsync(
+            var res = await cb.RequestAsync(
                 new LSP.LspRequest<LSP.TextDocumentPositionParams, SignatureHelp>(LSP.Methods.TextDocumentSignatureHelpName),
                 new LSP.TextDocumentPositionParams {
                     TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
                     Position = new LSP.Position { Line = postion.line, Character = postion.character },
                 },
                 CancellationToken.None
-            ).WaitAndUnwrapExceptions();
-
+            );
             return res;
         }
     }

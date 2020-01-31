@@ -15,14 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Python.Analysis.Modules;
 using Microsoft.Python.Core;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis;
-using UnitTests.LanguageServerClient;
-using System.Threading.Tasks;
-using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 using NSubstitute.Exceptions;
+using UnitTests.LanguageServerClient;
+using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
     /// <summary>
@@ -97,6 +97,9 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             };
 
             await client.InvokeTextDocumentDidOpenAsync(openDocParams);
+
+            // hack to wait for analysis on server
+            await Task.Delay(200);
 
             return uri;
         }
