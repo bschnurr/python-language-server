@@ -94,10 +94,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
                 return null;
             }
 
-            //var contentTypeProvider = _serviceProvider.GetComponentModel().GetService<PyFilePathToContentTypeProvider>();
-            //if (contentTypeProvider.TryGetContentTypeForFilePath(filePath, out var contentType)) {
-            //    return PythonLanguageClient.FindLanguageClient(contentType.TypeName);
-            //}
             return PythonLanguageClient.FindLanguageClient("PythonFile");
         }
 

@@ -5,6 +5,10 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.CoreUtility" Version="16.4.280" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Client" Version="16.4.30" />
