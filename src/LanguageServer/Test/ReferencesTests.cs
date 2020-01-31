@@ -18,7 +18,9 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Analysis.Analyzer;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Documents;
+using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
@@ -39,7 +41,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SingleFile() {
             const string code = @"
@@ -61,6 +69,8 @@ x = 2
             refs[2].range.Should().Be(7, 0, 7, 1);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FindAllReferences_MultipleOpenFiles() {
             const string code1 = @"
@@ -137,6 +147,8 @@ c = x";
             refs[1].uri.Should().Be(uri2);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClosedFiles() {
             const string code = @"
@@ -183,6 +195,8 @@ y = x
             refs[6].uri.Should().Be(uri3);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NestedClosedFiles() {
             const string code = @"
@@ -230,6 +244,8 @@ y = x
             refs[6].uri.Should().Be(uri3);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UnrelatedFiles() {
             const string code = @"
@@ -259,6 +275,8 @@ def baz(quux):
             refs[1].uri.Should().Be(analysis.Document.Uri);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task RemoveReference() {
             const string code1 = @"
@@ -316,6 +334,8 @@ b = y
             refs[0].uri.Should().Be(uri1);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task RemoveReferenceNested() {
             const string code1 = @"
@@ -388,6 +408,8 @@ b = y
             refs[2].uri.Should().Be(uri2);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UpdateReferencesOnEdit() {
             const string code = @"
@@ -429,6 +451,8 @@ logging.getLogger()
             refs[1].uri.Should().Be(uri);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task EmptyAnalysis() {
             await GetAnalysisAsync(string.Empty);

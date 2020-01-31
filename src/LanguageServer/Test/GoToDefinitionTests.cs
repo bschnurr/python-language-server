@@ -18,9 +18,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Analysis.Analyzer;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Documents;
+using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
 using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
@@ -39,6 +40,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task BasicDefinitions() {
             const string code = @"
@@ -102,6 +110,8 @@ c.method(1, 2)
             reference.range.Should().Be(7, 8, 7, 14);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefinitionFromParent() {
             const string code = @"
@@ -127,6 +137,8 @@ class child(base):
             reference.range.Should().Be(2, 4, 2, 8);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefinitionFromParentOtherModule() {
             var otherModPath = TestData.GetTestSpecificUri("other.py");
@@ -166,6 +178,8 @@ class D(C):
             reference.range.Should().Be(2, 4, 2, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefinitionFromParentOtherModuleOnSuper() {
             var otherModPath = TestData.GetTestSpecificUri("other.py");
@@ -205,6 +219,8 @@ class D(C):
             reference.range.Should().Be(2, 4, 2, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         [Ignore("Todo: super() multiple Inheritance support")]
         public async Task MultipleInheritanceSuperShouldWalkDecendants() {
@@ -243,6 +259,8 @@ class D(C):
         }
 
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoModuleSource() {
             const string code = @"
@@ -273,6 +291,8 @@ logging.info('')
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoModuleSourceImportAs() {
             const string code = @"
@@ -298,6 +318,8 @@ log
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoModuleSourceFromImport() {
             const string code = @"from logging import A";
@@ -311,6 +333,8 @@ log
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefitionFromImport() {
             const string code = @"
@@ -331,6 +355,8 @@ x = t
             reference.uri.AbsolutePath.Should().Contain("MultiValues.py");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDeclarationFromImport() {
             const string code = @"
@@ -350,6 +376,8 @@ x = t
             reference.uri.AbsolutePath.Should().Contain("MultiValues.py");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoModuleSourceFromImportAs() {
             const string code = @"from logging import RootLogger as rl";
@@ -363,6 +391,8 @@ x = t
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefinitionFromImportAs() {
             const string code = @"
@@ -379,6 +409,8 @@ x = crit
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDeclarationFromImportAs() {
             const string code = @"
@@ -393,6 +425,8 @@ x = crit
             reference.range.Should().Be(1, 32, 1, 36);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoBuiltinObject() {
             const string code = @"
@@ -410,6 +444,8 @@ class A(object):
             reference.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoRelativeImportInExplicitPackage() {
             var pkgPath = TestData.GetTestSpecificUri("pkg", "__init__.py");
@@ -434,6 +470,8 @@ class A(object):
             reference.uri.Should().Be(modPath);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoModuleSourceFromRelativeImport() {
             var modAPath = TestData.GetTestSpecificUri("a.py");
@@ -463,6 +501,8 @@ def X(): ...
         }
 
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task EmptyAnalysis() {
             var analysis = await GetAnalysisAsync(string.Empty);
@@ -475,6 +515,8 @@ def X(): ...
             reference.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ReCompile() {
             const string code = @"
@@ -491,6 +533,8 @@ x = re.compile(r'hello', re.IGNORECASE)
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task Constant() {
             const string code = @"
@@ -506,6 +550,8 @@ helper.message
             reference.uri.AbsolutePath.Should().Contain("__init__.py");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportedClassMember() {
             await TestData.CreateTestSpecificFileAsync($"module{Path.DirectorySeparatorChar}bar.py", @"
@@ -542,6 +588,8 @@ class MainClass:
             reference.uri.AbsolutePath.Should().Contain("bar.py");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NamedTuple() {
             const string code = @"
@@ -562,6 +610,8 @@ pt = Point(1, 2)
             reference.range.Should().Be(3, 0, 3, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ModulePartsNavigation() {
             const string code = @"
@@ -616,6 +666,8 @@ print(os_path.basename('a/b/c'))
             line.Substring(reference.range.start.character).Should().Be("path");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task Unittest() {
             const string code = @"
@@ -637,6 +689,8 @@ class MyTestCase(TestCase):
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task DateTimeProperty() {
             const string code = @"
@@ -653,6 +707,8 @@ x = datetime.datetime.day
             reference.uri.AbsolutePath.Should().NotContain("pyi");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GotoDefinitionFromMultiImport() {
             var otherModPath = TestData.GetTestSpecificUri("other.py");
@@ -690,6 +746,8 @@ from other import a, b, c
             reference.range.Should().Be(3, 4, 3, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UnknownType() {
             const string code = @"
@@ -701,6 +759,8 @@ A
             reference.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UnknownImportedType() {
             const string code = @"
@@ -712,6 +772,8 @@ from nonexistent import some
             reference.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task LocalParameter() {
             const string code = @"

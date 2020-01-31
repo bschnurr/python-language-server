@@ -34,6 +34,8 @@ using Microsoft.Python.Parsing;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Analysis.Core.Interpreter;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
@@ -49,7 +51,14 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
+
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TopLevelVariables() {
             const string code = @"
@@ -68,6 +77,7 @@ class C:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task StringMembers() {
             const string code = @"
@@ -81,6 +91,7 @@ x.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ModuleMembers() {
             const string code = @"
@@ -94,6 +105,7 @@ datetime.datetime.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MembersIncomplete() {
             const string code = @"
@@ -113,6 +125,7 @@ ABCDE.me
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(PythonLanguageVersion.V36, "value")]
         [DataRow(PythonLanguageVersion.V37, "object")]
         [DataTestMethod]
@@ -132,6 +145,7 @@ class oar(list):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task OverrideInit3X() {
             const string code = @"
@@ -152,6 +166,7 @@ class Test(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(PythonLanguageVersion.V26, "value")]
         [DataRow(PythonLanguageVersion.V27, "value")]
         [DataTestMethod]
@@ -171,6 +186,7 @@ class oar(list):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task OverrideInit2X() {
             const string code = @"
@@ -191,6 +207,7 @@ class Test(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeAtEndOfMethod() {
             const string code = @"
@@ -213,6 +230,7 @@ x.oar(100)
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeAtEndOfIncompleteMethod() {
             const string code = @"
@@ -231,6 +249,7 @@ x.oar(100)
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypeIntersectionUserDefinedTypes() {
             const string code = @"
@@ -255,6 +274,7 @@ c.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false, "B, self")]
         [DataRow(true, "")]
         [DataTestMethod, Priority(0)]
@@ -277,6 +297,7 @@ class B(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -318,6 +339,7 @@ class B(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InExcept() {
             var analysis = await GetAnalysisAsync("try:\n    pass\nexcept ");
@@ -352,6 +374,7 @@ class B(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AfterDot() {
             const string code = @"
@@ -388,6 +411,7 @@ x
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AfterAssign() {
             var analysis = await GetAnalysisAsync("x = x\ny = ");
@@ -401,6 +425,7 @@ x
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -419,6 +444,7 @@ class Simple(unittest.TestCase):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task WithWhitespaceAroundDot() {
             const string code = @"import sys
@@ -432,6 +458,7 @@ sys  .  version
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MarkupKindValid() {
             var analysis = await GetAnalysisAsync("import sys\nsys.\n");
@@ -443,6 +470,7 @@ sys  .  version
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NewType() {
             const string code = @"
@@ -460,6 +488,7 @@ foo.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericListBase() {
             const string code = @"
@@ -481,6 +510,7 @@ def func(a: List[str]):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericDictBase() {
             const string code = @"
@@ -502,6 +532,7 @@ def func(a: Dict[int, str]):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericClassMethod() {
             const string code = @"
@@ -535,6 +566,7 @@ y = boxedstr.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericAndRegularBases() {
             const string code = @"
@@ -568,6 +600,7 @@ y = boxedstr.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRef() {
             const string code = @"
@@ -602,6 +635,7 @@ class C(object):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SimpleGlobals() {
             const string code = @"
@@ -624,6 +658,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -663,6 +698,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionDefinition_2X() {
             var analysis = await GetAnalysisAsync("@dec" + Environment.NewLine + "def  f(): pass", PythonVersions.LatestAvailable2X);
@@ -688,6 +724,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionDefinition_3X() {
             var analysis = await GetAnalysisAsync("@dec" + Environment.NewLine + "async   def  f(): pass", PythonVersions.LatestAvailable3X);
@@ -713,6 +750,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [TestMethod, Priority(0)]
@@ -760,6 +798,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InWithStatement() {
             var analysis = await GetAnalysisAsync("with x as y, z as w: pass");
@@ -800,6 +839,7 @@ x.abc()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportInPackage() {
             var module1Path = TestData.GetTestSpecificUri("package", "module1.py");
@@ -831,6 +871,7 @@ x.abc()
 
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InImport() {
             var code = @"
@@ -918,6 +959,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForOverride() {
             const string code = @"
@@ -939,6 +981,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -952,6 +995,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -963,6 +1007,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionInOpenString() {
             var analysis = await GetAnalysisAsync("'''.");
@@ -972,6 +1017,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("f'.")]
         [DataRow("f'a.")]
         [DataRow("f'a.'")]
@@ -984,6 +1030,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionBadImportExpression() {
             var analysis = await GetAnalysisAsync("import os,.");
@@ -992,6 +1039,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoCompletionInComment() {
 
@@ -1002,6 +1050,7 @@ pass";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1018,6 +1067,7 @@ os.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1034,6 +1084,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInRoot() {
             const string code = "from .";
@@ -1045,6 +1096,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInRootWithInitPy() {
             var initPyPath = TestData.GetTestSpecificUri("__init__.py");
@@ -1065,6 +1117,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInExplicitPackage() {
             var initPyPath = TestData.GetTestSpecificUri("package", "__init__.py");
@@ -1090,6 +1143,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromPartialName() {
             var initPyPath = TestData.GetTestSpecificUri("package", "__init__.py");
@@ -1116,6 +1170,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromDotInImplicitPackage() {
             var module1 = TestData.GetTestSpecificUri("package", "module1.py");
@@ -1137,6 +1192,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SubmoduleMember() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1157,6 +1213,7 @@ os.path.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1176,6 +1233,7 @@ E
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoDuplicateMembers() {
             const string code = @"import sy";
@@ -1188,6 +1246,7 @@ E
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
@@ -1209,6 +1268,7 @@ a.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AzureFunctions() {
             const string code = @"
@@ -1233,6 +1293,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InForEnumeration() {
             var analysis = await GetAnalysisAsync(@"
@@ -1245,6 +1306,7 @@ for a, b in x:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod, Priority(0)]
@@ -1259,6 +1321,7 @@ for a, b in x:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task OddNamedFile() {
             const string code = @"
@@ -1278,6 +1341,7 @@ sys.
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FunctionScope() {
             const string code = @"
@@ -1292,6 +1356,7 @@ a";
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task PrivateMembers() {
             const string code = @"
@@ -1315,6 +1380,7 @@ A().
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ParameterAnnotatedDefault() {
             const string code = @"
@@ -1338,6 +1404,7 @@ def test(x: Foo = func()):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AddBrackets() {
             const string code = @"prin";
@@ -1359,6 +1426,7 @@ def test(x: Foo = func()):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClassMemberAccess() {
             const string code = @"
@@ -1389,6 +1457,7 @@ class A:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromImportPackageNoInitPy() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1408,6 +1477,7 @@ class A:
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InFunctionParameters() {
             const string code = @"
@@ -1442,6 +1512,7 @@ b = B()
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task PositionalOnly() {
             const string code = @"
@@ -1478,6 +1549,7 @@ class B(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task OnlyOneNone() {
             var analysis = await GetAnalysisAsync("", PythonVersions.Required_Python38X);
@@ -1489,6 +1561,7 @@ class B(A):
 
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task SingleInheritanceSuperCheckCompletion() {
             const string code = @"
@@ -1510,6 +1583,7 @@ class B(A):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod]
         public async Task SingleInheritanceSuperCheckCompletionNoDuplicates() {
             const string code = @"
@@ -1534,6 +1608,7 @@ class C(B):
 
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportDotMembers() {
             var appUri = TestData.GetTestSpecificUri("app.py");
@@ -1554,6 +1629,7 @@ class C(B):
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClassPrivateMembers() {
             const string code = @"

@@ -30,7 +30,6 @@ using Microsoft.Python.LanguageServer.Indexing;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Ast;
 using Microsoft.Python.UnitTests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -522,7 +521,7 @@ def Method():
             // calculate actions
             var diagnosticSpan = spans["diagnostic"].First().ToSourceSpan(analysis.Ast);
             var diagnostics = GetDiagnostics(analysis, diagnosticSpan, MissingImportCodeActionProvider.Instance.FixableDiagnostics);
-            var codeActions = await new QuickFixCodeActionSourceLspAdapter(analysis.ExpressionEvaluator.Services).GetCodeActionsAsync(analysis, CodeActionSettings.Default, diagnostics, TestCancellationToken);
+            var codeActions = await new QuickFixCodeActionSource(analysis.ExpressionEvaluator.Services).GetCodeActionsAsync(analysis, CodeActionSettings.Default, diagnostics, TestCancellationToken);
 
             // verify results
             var codeAction = codeActions.Single(c => c.title == title);

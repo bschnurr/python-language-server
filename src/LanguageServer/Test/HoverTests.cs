@@ -27,10 +27,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
-using UnitTests.LanguageServerClient.Mocks;
-using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Analysis.Core.Interpreter;
+using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
@@ -44,6 +45,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task BasicTypes() {
             const string code = @"
@@ -90,6 +98,8 @@ string = str
             hover.contents.value.Should().StartWith("class str\n\nstr(object='') -> str");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod]
@@ -106,6 +116,8 @@ datetime.datetime.now().day
             AssertHover(hs, analysis, new SourceLocation(3, 20), @"datetime.now(tz: tzinfo) -> datetime*", new SourceSpan(3, 18, 3, 22));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromImportHover() {
             const string code = @"
@@ -119,6 +131,8 @@ from os import path as p
             AssertHover(hs, analysis, new SourceLocation(2, 24), "module*", new SourceSpan(2, 24, 2, 25));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportAsNameHover() {
             const string code = @"
@@ -131,6 +145,8 @@ import datetime as d123
             AssertHover(hs, analysis, new SourceLocation(2, 21), "module datetime*", new SourceSpan(2, 20, 2, 24));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SelfHover() {
             const string code = @"
@@ -149,6 +165,8 @@ class Derived(Base):
             AssertHover(hs, analysis, new SourceLocation(8, 8), "class Derived*", new SourceSpan(8, 8, 8, 12));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task HoverGenericClass() {
             const string code = @"
@@ -175,6 +193,8 @@ y = boxedstr.get()
             AssertHover(hs, analysis, new SourceLocation(17, 15), "Box.get() -> str", new SourceSpan(17, 13, 17, 17));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromImportParts() {
             const string code = @"
@@ -186,6 +206,8 @@ from time import time
             AssertHover(hs, analysis, new SourceLocation(2, 22), @"time() -> float*", new SourceSpan(2, 18, 2, 22));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FromOsPath() {
             const string code = @"
@@ -202,6 +224,8 @@ from os.path import join as JOIN
             AssertHover(hs, analysis, new SourceLocation(2, 30), @"join(path: str, *paths: str) -> str", new SourceSpan(2, 29, 2, 33));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task OsPath() {
             const string code = @"
@@ -215,6 +239,8 @@ import os.path as PATH
             AssertHover(hs, analysis, new SourceLocation(2, 20), $"module {name}*", new SourceSpan(2, 19, 2, 23));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FStringExpressions() {
             const string code = @"
@@ -233,6 +259,8 @@ f'hey {some}'
             AssertHover(hs, analysis, new SourceLocation(6, 8), @"some: str", new SourceSpan(6, 8, 6, 12));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AssignmentExpressions() {
             const string code = @"
@@ -243,6 +271,8 @@ f'hey {some}'
             AssertHover(hs, analysis, new SourceLocation(2, 2), @"a: int", new SourceSpan(2, 2, 2, 3));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MissingSelf() {
             const string code = @"
@@ -260,6 +290,8 @@ class A:
             AssertNoHover(hs, analysis, new SourceLocation(8, 14));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task MemberWithSelf() {
             const string code = @"
@@ -281,6 +313,8 @@ class A:
             AssertHover(hs, analysis, new SourceLocation(9, 20), @"A.func()", new SourceSpan(9, 18, 9, 23));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImmediateClassScopeVar() {
             const string code = @"
@@ -332,35 +366,5 @@ class A:
                 hover.range.Should().Be((Range)span.Value);
             }
         }
-
-        public static async Task<PythonLanguageClient> CreateClientAsync() {
-            var contentTypeName = "PythonFile";
-
-            var clientContext = new PythonLanguageClientContextFixed(
-                contentTypeName,
-                PythonVersions.LatestAvailable,
-                null,
-                Enumerable.Empty<string>()
-            );
-
-            var broker = new MockLanguageClientBroker();
-            await PythonLanguageClient.EnsureLanguageClientAsync(
-                null,
-                new JoinableTaskContext(),
-                clientContext,
-                broker
-            );
-
-            return PythonLanguageClient.FindLanguageClient(contentTypeName);
-        }
-
     }
-
-
-
-      
-
-      
-
-    
 }

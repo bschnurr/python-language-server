@@ -17,11 +17,12 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Python.Analysis.Analyzer;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis.Tests.FluentAssertions;
 using Microsoft.Python.Analysis.Types;
+using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Completion;
 using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
 using Microsoft.Python.LanguageServer.Tests.LspAdapters;
@@ -41,6 +42,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ExplicitImplicitPackageMix() {
             const string appCode = @"
@@ -86,6 +94,8 @@ projectB.foo.";
             comps.Should().HaveLabels("baz");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ExplicitImplicitPackageMix2() {
             const string appCode = @"
@@ -132,6 +142,8 @@ projectB.foo.";
             comps.Should().HaveLabels("baz");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SysModuleChain() {
             const string content1 = @"import module2.mod as mod
@@ -160,6 +172,8 @@ VALUE = 42";
             comps.Should().HaveLabels("VALUE");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SysModuleChain_SingleOpen() {
             const string content = @"import module1.mod as mod
@@ -182,6 +196,8 @@ VALUE = 42");
             comps.Should().HaveLabels("VALUE");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UncSearchPaths() {
             const string module1Path = @"q:\Folder\package\module1.py";
@@ -224,6 +240,8 @@ module2.";
             comps.Should().HaveLabels("Y").And.NotContainLabels("X");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UserSearchPathsInsideWorkspace() {
             var folder2 = TestData.GetTestSpecificPath("src");
@@ -272,6 +290,8 @@ mod2.B.";
             comps.Should().HaveLabels("method2");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task PackageModuleImport() {
             const string appCode = @"
@@ -311,6 +331,8 @@ package.sub_package.module2.";
             comps.Should().HaveLabels("Y").And.NotContainLabels("X");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InitPyVsModuleNameImport_AbsoluteImport() {
             const string appCode = @"
@@ -342,6 +364,8 @@ submodule.";
             comps.Should().HaveLabels("Z");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InitPyVsModuleNameImport_FromAbsoluteImport() {
             const string appCode = @"
@@ -373,6 +397,8 @@ submodule.";
             comps.Should().HaveLabels("Z");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task InitPyVsModuleNameImport_FromRelativeImport() {
             const string appCode = @"
@@ -404,6 +430,8 @@ submodule.";
             comps.Should().HaveLabels("Z");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task LoopImports() {
             var module1Code = @"
@@ -476,6 +504,8 @@ a3.";
             comps.Should().HaveLabels("M1");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task LoopImports_Variables1() {
             const string module1Code = @"
@@ -531,6 +561,8 @@ z.";
             comps.Should().HaveLabels("bit_length");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task LoopImports_Variables2() {
             const string module1Code = @"
@@ -599,6 +631,8 @@ z.M3().
             comps.Should().HaveLabels("M1");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TypingModule() {
             var analysis = await GetAnalysisAsync(@"from typing import ");
@@ -607,6 +641,8 @@ z.M3().
             comps.Should().HaveLabels("TypeVar", "List", "Dict", "Union");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task RelativeImportsFromParent() {
             const string module2Code = @"from ...package import module1
@@ -632,6 +668,8 @@ module1.";
             comps.Should().HaveLabels("X");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(@"from package import sub_package; import package.sub_package.module")]
         [DataRow(@"import package.sub_package.module; from package import sub_package")]
         [DataRow(@"from package import sub_package; from package.sub_package import module")]
@@ -668,6 +706,8 @@ module1.";
             comps.Should().HaveLabels("X");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task AllSimple() {
             var module1Code = @"
@@ -713,6 +753,8 @@ B().
             comps.Should().NotContainLabels("bar");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(@"
 other = ['B']
 __all__ = ['A'] + other")]
@@ -779,6 +821,9 @@ C().
             comps.Should().NotContainLabels("baz");
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(@"
 __all__ = ['A']
 __all__.something(A)")]
@@ -838,6 +883,8 @@ B().
             comps.Should().HaveLabels("bar");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task StarImportUnderscores() {
             var module1Code = @"
@@ -885,6 +932,9 @@ B().
             comps.Should().HaveLabels("bar");
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task Python2XRelativeImportInRoot() {
             var folder1 = TestData.GetTestSpecificPath("folder1");
@@ -921,6 +971,9 @@ module.";
             comps.Should().HaveLabels("Y");
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SecondRootIsPartOfFirstRoot() {
             var folder1 = TestData.GetTestSpecificPath("folder");
@@ -955,6 +1008,9 @@ module2.";
             comps.Should().HaveLabels("Y");
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("Basic.egg")]
         [DataRow("Basic.zip")]
         [DataTestMethod, Priority(0)]
@@ -974,6 +1030,9 @@ module2.";
             analysis.Should().HaveVariable("i").OfType(BuiltinTypeId.Int);
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("ZipImports.zip")]
         [DataRow("EggImports.egg")]
         [DataTestMethod, Priority(0)]
@@ -996,6 +1055,9 @@ module2.";
             analysis.Should().HaveVariable("i").OfType(BuiltinTypeId.Int);
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("ZipRelativeImports.zip")]
         [DataRow("EggRelativeImports.egg")]
         [DataTestMethod, Priority(0)]
@@ -1017,6 +1079,9 @@ module2.";
             analysis.Should().HaveVariable("s").OfType(BuiltinTypeId.Str);
         }
 
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("simplejson.egg")]
         [DataRow("simplejson.zip")]
         [DataTestMethod, Priority(0)]

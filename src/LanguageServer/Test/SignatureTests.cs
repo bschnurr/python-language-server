@@ -25,6 +25,8 @@ using Microsoft.Python.Parsing.Tests;
 using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Analysis.Core.Interpreter;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
@@ -38,6 +40,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
+
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataTestMethod, Priority(0)]
         [DataRow(true)]
         [DataRow(false)]
@@ -68,6 +77,8 @@ C().method()
             }
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClassInitializer() {
             const string code = @"
@@ -87,6 +98,8 @@ C()
             sig.signatures[0].label.Should().Be("C(a: int, b)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ImportedClassInitializer() {
             const string module1Code = @"
@@ -123,6 +136,8 @@ module1.C()
             sig.signatures[0].label.Should().Be("C(a: int, b)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericClassMethod() {
             const string code = @"
@@ -154,6 +169,8 @@ y = boxedstr.get()
             sig.signatures[0].label.Should().Be("get() -> str");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task GenericUnboundForwardRefFunction() {
             const string code = @"
@@ -171,6 +188,8 @@ h = tmp()
             sig.signatures[0].label.Should().Be("tmp(v: Dict[str, int]) -> Dict[str, int]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefUnboundFunction() {
             const string code = @"
@@ -188,6 +207,8 @@ y = get()
             sig.signatures[0].label.Should().Be("get() -> int");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UnknownForwardRefUnboundFunction() {
             const string code = @"
@@ -205,6 +226,8 @@ y = get()
             sig.signatures[0].label.Should().Be("get() -> 'unknown_type'");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task UnknownForwardRefParam() {
             const string code = @"
@@ -222,6 +245,8 @@ y = get()
             sig.signatures[0].label.Should().Be("get(v) -> 'unknown_type'");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefMethod() {
             const string code = @"
@@ -251,6 +276,8 @@ y = get()
             sig.signatures[0].label.Should().Be("get() -> int");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefQuotedGeneric() {
             const string code = @"
@@ -272,6 +299,8 @@ x = boxedint.get(5)
             sig.signatures[0].label.Should().Be("get(x: List[int]) -> int");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefNestedQuotedGeneric() {
             const string code = @"
@@ -293,6 +322,8 @@ x = boxedint.get(5)
             sig.signatures[0].label.Should().Be("get(x: Sequence[List[int]]) -> int");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefNestedQuotedGenericReturnValue() {
             const string code = @"
@@ -314,7 +345,8 @@ x = boxedint.get(5)
             sig.signatures[0].label.Should().Be("get(x: Sequence[List[int]]) -> Sequence[List[int]]");
         }
 
-
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ForwardRefQuotedGenericTypeParameter() {
             const string code = @"
@@ -338,6 +370,8 @@ x = boxedint.get()
             sig.signatures[0].label.Should().Be("get() -> List[X]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task PositionalOnly() {
             const string code = @"
@@ -355,6 +389,8 @@ f()
             sig.signatures[0].label.Should().Be("f(a, b, /, c, d, *, e, f)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task DefaultValues() {
             const string code = @"

@@ -42,6 +42,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void NullReader() {
             Func<Task<TextEdit[]>> func = () => BlockFormatter.ProvideEdits(null, new Position(), new FormattingOptions());
@@ -49,6 +50,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task FirstLine() {
             using (var reader = new StringReader(string.Empty)) {
@@ -58,6 +60,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void TooShort() {
             using (var reader = new StringReader("a + b")) {
@@ -67,6 +70,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoMatch() {
             var code = @"d = {
@@ -80,6 +84,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("elseBlocksFirstLine2.py", 3, 7, true, 2, 0, 2)]
         [DataRow("elseBlocksFirstLine4.py", 3, 9, true, 4, 0, 4)]
         [DataRow("elseBlocksFirstLineTab.py", 3, 6, false, 4, 0, 1)]
@@ -97,6 +102,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(6, 22, 0, 2)]
         [DataRow(35, 13, 0, 2)]
         [DataRow(54, 19, 0, 2)]
@@ -118,6 +124,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(15, 21)]
         [DataRow(47, 12)]
         [DataRow(157, 25)]
@@ -135,6 +142,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(6, 22, 0, 4)]
         [DataRow(35, 13, 0, 4)]
         [DataRow(54, 19, 0, 4)]
@@ -156,6 +164,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(15, 21)]
         [DataRow(47, 12)]
         [DataRow(157, 25)]
@@ -173,6 +182,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(6, 22, 0, 2)]
         [DataRow(35, 13, 0, 2)]
         [DataRow(54, 19, 0, 2)]
@@ -195,6 +205,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(4, 18, 0, 2)]
         [DataRow(7, 18, 0, 2)]
         [DataRow(21, 18, 0, 2)]
@@ -221,6 +232,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(345, 18)]
         [DataRow(359, 18)]
         [DataTestMethod, Priority(0)]
@@ -235,8 +247,9 @@ namespace Microsoft.Python.LanguageServer.Tests {
                 edits.Should().BeEmpty();
             }
         }
-        
+
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(4, 18, 0, 4)]
         [DataRow(7, 18, 0, 4)]
         [DataRow(21, 18, 0, 4)]
@@ -263,6 +276,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(345, 18)]
         [DataTestMethod, Priority(0)]
         public async Task ElseBlockFourSpaceNoEdits(int line, int col) {
@@ -278,6 +292,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(4, 18, 0, 1)]
         [DataRow(7, 18, 0, 1)]
         [DataRow(21, 18, 0, 1)]
@@ -304,6 +319,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         }
 
         [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow(345, 18)]
         [DataTestMethod, Priority(0)]
         public async Task ElseBlockTabNoEdits(int line, int col) {

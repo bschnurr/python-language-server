@@ -40,12 +40,16 @@ namespace Microsoft.Python.LanguageServer.Tests {
             TestEnvironmentImpl.TestCleanup();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void LineOutOfBounds() {
             AssertNoEdits("a+b", line: -1);
             AssertNoEdits("a+b", line: 1);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("")]
         [DataRow("  ")]
         [DataRow("\t")]
@@ -54,71 +58,99 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertNoEdits(code);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void OperatorSpacing() {
             AssertSingleLineFormat("( x  +1 )*y/ 3", "(x + 1) * y / 3");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void TupleComma() {
             AssertSingleLineFormat("foo =(0 ,)", "foo = (0,)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonRegular() {
             AssertSingleLineFormat("if x == 4 : print x,y; x,y= y, x", "if x == 4: print x, y; x, y = y, x", languageVersion: PythonLanguageVersion.V27);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonSlices() {
             AssertSingleLineFormat("x[1: 30]", "x[1:30]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonSlicesInArguments() {
             AssertSingleLineFormat("spam ( ham[ 1 :3], {eggs : 2})", "spam(ham[1:3], {eggs: 2})");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonSlicesWithDoubleColon() {
             AssertSingleLineFormat("ham [1:9 ], ham[ 1: 9:   3], ham[: 9 :3], ham[1: :3], ham [ 1: 9:]", "ham[1:9], ham[1:9:3], ham[:9:3], ham[1::3], ham[1:9:]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonSlicesWithOperators() {
             AssertSingleLineFormat("ham [lower+ offset :upper+offset]", "ham[lower + offset : upper + offset]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonSlicesWithFunctions() {
             AssertSingleLineFormat("ham[ : upper_fn ( x) : step_fn(x )], ham[ :: step_fn(x)]", "ham[: upper_fn(x) : step_fn(x)], ham[:: step_fn(x)]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void ColonInForLoop() {
             AssertSingleLineFormat("for index in  range( len(fruits) ): ", "for index in range(len(fruits)):");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void TrailingComment() {
             AssertSingleLineFormat("x=1    # comment", "x = 1  # comment");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void SingleComment() {
             AssertSingleLineFormat("# comment", "# comment");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void CommentWithLeadingWhitespace() {
             AssertSingleLineFormat("   # comment", "# comment", editStart: 3);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void AsterisksArgsKwargs() {
             AssertSingleLineFormat("foo( *a, ** b)", "foo(*a, **b)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("for x in(1,2,3)", "for x in (1, 2, 3)")]
         [DataRow("assert(1,2,3)", "assert (1, 2, 3)")]
         [DataRow("if (True|False)and(False/True)and not ( x )", "if (True | False) and (False / True) and not (x)")]
@@ -129,6 +161,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("x.y", "x.y")]
         [DataRow("x. y", "x.y")]
         [DataRow("5 .y", "5 .y")]
@@ -137,46 +171,64 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void DoubleAsterisk() {
             AssertSingleLineFormat("foo(a**2, **k)", "foo(a ** 2, **k)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void Lambda() {
             AssertSingleLineFormat("lambda * args, :0", "lambda *args,: 0");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void CommaExpression() {
             AssertSingleLineFormat("x=1,2,3", "x = 1, 2, 3");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void IsExpression() {
             AssertSingleLineFormat("a( (False is  2)  is 3)", "a((False is 2) is 3)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void FunctionReturningTuple() {
             AssertSingleLineFormat("x,y=f(a)", "x, y = f(a)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void FromDotImport() {
             AssertSingleLineFormat("from. import A", "from . import A");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void FromDotDotImport() {
             AssertSingleLineFormat("from ..import A", "from .. import A");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void FromDotDotXImport() {
             AssertSingleLineFormat("from..x import A", "from ..x import A");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("z=r\"\"", "z = r\"\"")]
         [DataRow("z=rf\"\"", "z = rf\"\"")]
         [DataRow("z=R\"\"", "z = R\"\"")]
@@ -186,6 +238,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("x = - y", "x = -y")]
         [DataRow("x = + y", "x = +y")]
         [DataRow("x = ~ y", "x = ~y")]
@@ -205,6 +259,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("def foo(x:int=3,x=100.)", "def foo(x: int = 3, x=100.)")]
         [DataRow("def foo(x:Union[int,str]=3,x=100.)", "def foo(x: Union[int, str] = 3, x=100.)")]
         [DataTestMethod, Priority(0)]
@@ -212,21 +268,29 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void TrailingCommaAssignment() {
             AssertSingleLineFormat("a, =[1]", "a, = [1]");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void IfTrue() {
             AssertSingleLineFormat("if(True) :", "if (True):");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void LambdaArguments() {
             AssertSingleLineFormat("l4= lambda x =lambda y =lambda z= 1: z: y(): x()", "l4 = lambda x=lambda y=lambda z=1: z: y(): x()");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("x = foo(\n  * param1,\n  * param2\n)", "*param1,", 1, 2)]
         [DataRow("x = foo(\n  * param1,\n  * param2\n)", "*param2", 2, 2)]
         [DataTestMethod, Priority(0)]
@@ -234,11 +298,15 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected, line: line, editStart: editStart);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void Arrow() {
             AssertSingleLineFormat("def f(a, \n    ** k: 11) -> 12: pass", "**k: 11) -> 12: pass", line: 1, editStart: 4);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("def foo(x = 1)", "def foo(x=1)", 0, 0)]
         [DataRow("def foo(a\n, x = 1)", ", x=1)", 1, 0)]
         [DataRow("foo(a  ,b,\n  x = 1)", "x=1)", 1, 2)]
@@ -256,11 +324,15 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected, line: line, editStart: editStart);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void RemoveTrailingSpace() {
             AssertSingleLineFormat("a+b ", "a + b");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         // https://github.com/Microsoft/vscode-python/issues/1783
         [DataRow("*a, b, c = 1, 2, 3")]
         [DataRow("a, *b, c = 1, 2, 3")]
@@ -271,6 +343,8 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, code);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         // https://github.com/Microsoft/vscode-python/issues/1792
         // https://www.python.org/dev/peps/pep-0008/#pet-peeves
         [DataRow("ham[lower+offset : upper+offset]", "ham[lower + offset : upper + offset]")]
@@ -291,17 +365,23 @@ namespace Microsoft.Python.LanguageServer.Tests {
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void SlicingMultilineNonSimple() {
             AssertSingleLineFormat("arr[:foo\n\n\n\n.bar]", "arr[: foo");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         // https://github.com/Microsoft/vscode-python/issues/1784
         [TestMethod, Priority(0)]
         public void LiteralFunctionCall() {
             AssertSingleLineFormat("5 .bit_length()", "5 .bit_length()");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         // https://github.com/Microsoft/vscode-python/issues/2323
         [TestMethod, Priority(0)]
         public void MultilineFString() {
@@ -312,11 +392,15 @@ order by { order_columns}
 limit { limit_num}; """"""", line: 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void Ellipsis() {
             AssertSingleLineFormat("x=...", "x = ...");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("print(*[1], *[2], 3)")]
         [DataRow("dict(**{'x': 1}, y=2, **{'z': 3})")]
         [DataRow("*range(4), 4")]
@@ -330,21 +414,29 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, code);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void MultilineStringAssignment() {
             AssertSingleLineFormat("x='''abc\ntest'''abc", "x = '''abc");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void MultilineDefaultArg() {
             AssertSingleLineFormat("def foo(x='''abc\ntest''')", "def foo(x='''abc");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void LineContinuation() {
             AssertSingleLineFormat("a+b+ \\\n", "a + b + \\");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("foo.a() \\\n   .b() \\\n   .c()", "foo.a() \\", 0, 0, 9)]
         [DataRow("foo.a() \\\r\n   .b() \\\r\n   .c()", "foo.a() \\", 0, 0, 9)]
         [DataRow("foo.a() \\\n   .b() \\\n   .c()", ".b() \\", 1, 3, 9)]
@@ -357,6 +449,8 @@ limit { limit_num}; """"""", line: 5);
             edits.Should().OnlyHaveTextEdit(expected, (line, characterStart, line, characterEnd));
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("a[:, :, :, 1]")]
         [DataRow("a[x:y, x + 1 :y, :, 1]")]
         [DataRow("a[:, 1:3]")]
@@ -367,16 +461,22 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, code);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void MultilineStringTrailingComment() {
             AssertSingleLineFormat("'''\nfoo\n''' # comment", "  # comment", line: 2, editStart: 3);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void NamedExpressions() {
             AssertSingleLineFormat("if a:=1:", "if a := 1:", languageVersion: PythonLanguageVersion.V38);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("`a`")]
         [DataRow("foo(`a`)")]
         [DataRow("`a` if a else 'oops'")]
@@ -385,6 +485,8 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, code, languageVersion: PythonLanguageVersion.V27);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("exec code", PythonLanguageVersion.V27)]
         [DataRow("exec (code)", PythonLanguageVersion.V27)]
         [DataRow("exec(code)", PythonLanguageVersion.V37)]
@@ -393,12 +495,16 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, code, languageVersion: version);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void CommentAfterOperator() {
             AssertSingleLineFormat("a+# comment\nb", "a +  # comment");
         }
 
 #if False  //bschnurr todo fix unmatchedBrack test
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("def foo()):\n    a+b", "a + b", 1, 4, ")", 0)]
         [DataRow("x = [1, 2]\nx += [3]]\na+b", "a + b", 2, 0, "]", 1)]
         [DataRow("x = { foo: bar } } }\na+b", "a + b", 1, 0, "}", 0)]
@@ -407,6 +513,8 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, expected, line: line, editStart: editStart, unmatched: (unmatched, unmatchedLine));
         }
 #endif
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("'a''b'", "'a' 'b'")]
         [DataRow("'a' 'b'", "'a' 'b'")]
         [DataRow("'''a''''''b'''", "'''a''' '''b'''")]
@@ -420,6 +528,8 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [DataRow("f'{x}'", "f'{x}'")]
         [DataRow("f'{x+1}'", "f'{x+1}'")]
         [DataRow("f'{x + 1}'", "f'{x + 1}'")]
@@ -430,11 +540,15 @@ limit { limit_num}; """"""", line: 5);
             AssertSingleLineFormat(code, expected);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void PositionalMarker() {
             AssertSingleLineFormat("def foo(x,y,/,z,*args,**kwargs)", "def foo(x, y, /, z, *args, **kwargs)");
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void GrammarFile() {
             var src = TestData.GetPath("TestData", "Formatting", "pythonGrammar.py");

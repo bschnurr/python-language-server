@@ -25,6 +25,8 @@ using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Analysis.Core.Interpreter;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
@@ -38,7 +40,13 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCleanup]
         public void Cleanup() => TestEnvironmentImpl.TestCleanup();
 
+        protected override async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var services = await base.CreateServicesAsync(root, configuration, stubCacheFolderPath, sm, searchPaths);
+            return await ServicesLspAdapter.CreateServicesAsync(root, configuration, stubCacheFolderPath, services, searchPaths);
+        }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task SingleFile() {
             const string code = @"
@@ -63,6 +71,8 @@ x = 2
             wse.changes[uri].All(x => x.newText.EqualsOrdinal("z")).Should().BeTrue();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task TwoOpenFiles() {
             const string code1 = @"
@@ -105,6 +115,8 @@ y = x
             wse.changes[uri2][1].range.Should().Be(2, 4, 2, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task ClosedFiles() {
             const string code = @"
@@ -149,6 +161,8 @@ y = x
             wse.changes[uri3][1].range.Should().Be(2, 4, 2, 5);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task Rename_ImportInitPy() {
             const string packageInitCode = @"x = 1";
@@ -177,6 +191,8 @@ y = package.x";
             wse.changes[moduleUri][0].range.Should().Be(1, 12, 1, 13);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task Rename_ImportSubmodule() {
             const string packageInitCode = @"x = 1";
@@ -205,6 +221,8 @@ y = package.x";
             wse.changes[moduleUri][0].range.Should().Be(1, 12, 1, 13);
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoRenameInCompiled() {
             const string code = "from sys import path";
@@ -219,6 +237,8 @@ y = package.x";
             wse.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoRenameInSystemLibrary() {
             const string code = @"from logging import BASIC_FORMAT";
@@ -232,6 +252,8 @@ y = package.x";
             wse.Should().BeNull();
         }
 
+        [TestCategory("MPLS_LSP_INT")]
+        [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public async Task NoRenameInUserLibrary() {
             const string code = @"

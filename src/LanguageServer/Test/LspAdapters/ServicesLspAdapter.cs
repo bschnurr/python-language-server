@@ -15,6 +15,9 @@ using System.Threading;
 using Microsoft.Python.Parsing;
 using System.Collections.Generic;
 using Microsoft.Python.LanguageServer.Indexing;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Analysis;
+using Microsoft.Python.Analysis.Documents;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
@@ -158,6 +161,19 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
                 return res;
             }
+        }
+
+        public static async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var interpreter = sm.GetService<IPythonInterpreter>();
+            var client = await ServicesLspAdapter.CreateClientAsync(interpreter.Configuration);
+            sm.AddService(client);
+
+            //Replace regular rdt with Lsp version
+            var rdt = sm.GetService<IRunningDocumentTable>();
+            sm.RemoveService(rdt);
+            sm.AddService(new RunningDocumentTableLspAdapter(sm, rdt, client));
+
+            return sm;
         }
 
         private static HierarchicalSymbol MakeHierarchicalSymbol(DocumentSymbol dSym) {
