@@ -37,6 +37,19 @@ using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
     public class ServicesLspAdapter {
+        public static async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
+            var interpreter = sm.GetService<IPythonInterpreter>();
+            var client = await CreateClientAsync(interpreter.Configuration);
+            sm.AddService(client);
+
+            //Replace regular rdt with Lsp version
+            var rdt = sm.GetService<IRunningDocumentTable>();
+            sm.RemoveService(rdt);
+            sm.AddService(new RunningDocumentTableLspAdapter(sm, rdt, client));
+
+            return sm;
+        }
+
         static public async Task<PythonLanguageClient> CreateClientAsync(InterpreterConfiguration configuration) {
 
             var contentTypeName = "PythonFile";
@@ -175,19 +188,6 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
                 return res;
             }
-        }
-
-        public static async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
-            var interpreter = sm.GetService<IPythonInterpreter>();
-            var client = await ServicesLspAdapter.CreateClientAsync(interpreter.Configuration);
-            sm.AddService(client);
-
-            //Replace regular rdt with Lsp version
-            var rdt = sm.GetService<IRunningDocumentTable>();
-            sm.RemoveService(rdt);
-            sm.AddService(new RunningDocumentTableLspAdapter(sm, rdt, client));
-
-            return sm;
         }
 
         private static HierarchicalSymbol MakeHierarchicalSymbol(DocumentSymbol dSym) {
