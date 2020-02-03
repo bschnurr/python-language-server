@@ -19,18 +19,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Analysis;
-using Microsoft.Python.Core.Text;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Core;
+using Microsoft.Python.Core.Services;
+using Microsoft.Python.Core.Text;
+using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
-using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
-using Microsoft.Python.Core.Services;
-using Microsoft.Python.Analysis.Core.Interpreter;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.Tests {
