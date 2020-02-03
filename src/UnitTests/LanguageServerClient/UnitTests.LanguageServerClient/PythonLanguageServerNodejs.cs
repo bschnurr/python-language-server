@@ -135,7 +135,6 @@ namespace UnitTests.LanguageServerClient {
                 }
             }
 
-#if DEBUG
             // For development convenience, allow use of global node.js install
             if (Environment.Is64BitOperatingSystem) {
                 filePath = GetNodePathFromRegistry(RegistryView.Registry64);
@@ -148,7 +147,6 @@ namespace UnitTests.LanguageServerClient {
             if (File.Exists(filePath)) {
                 return filePath;
             }
-#endif
 
             return null;
         }
