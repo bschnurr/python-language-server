@@ -431,6 +431,7 @@ x
         [DataRow(false)]
         [DataRow(true)]
         [DataTestMethod, Priority(0)]
+        [Ignore]
         public async Task MethodFromBaseClass(bool is3x) {
             const string code = @"
 import unittest
