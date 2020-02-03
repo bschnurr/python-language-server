@@ -17,16 +17,16 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core;
+using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
+using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
-using Microsoft.Python.Core.Services;
-using Microsoft.Python.Analysis.Core.Interpreter;
 
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]

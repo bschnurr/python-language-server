@@ -13,10 +13,10 @@
 // See the Apache Version 2.0 License for specific language governing
 // permissions and limitations under the License.
 
-using Microsoft.Python.Core.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using Microsoft.Python.Core.Testing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
 

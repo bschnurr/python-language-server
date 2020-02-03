@@ -14,17 +14,11 @@
 // permissions and limitations under the License.
 
 using System;
-using System.Threading.Tasks;
-using Microsoft.Python.Analysis;
-using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Analysis.Diagnostics;
-using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Analysis.Tests;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Idle;
-using Microsoft.Python.Core.Services;
 using Microsoft.Python.LanguageServer.Diagnostics;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
 using NSubstitute;
 
 namespace Microsoft.Python.LanguageServer.Tests {

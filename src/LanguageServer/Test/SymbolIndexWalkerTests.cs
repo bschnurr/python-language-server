@@ -24,6 +24,7 @@ using Microsoft.Python.Parsing.Ast;
 using Microsoft.Python.Tests.Utilities.FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
+
 namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
     public class SymbolIndexWalkerTests {
