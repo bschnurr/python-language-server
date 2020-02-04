@@ -13,9 +13,7 @@
 // See the Apache Version 2.0 License for specific language governing
 // permissions and limitations under the License.
 
-using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Analysis;
@@ -23,15 +21,14 @@ using Microsoft.Python.Analysis.Core.Interpreter;
 using Microsoft.Python.Core;
 using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
-using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
@@ -338,7 +335,7 @@ class A:
             var client = PythonLanguageClient.FindLanguageClient("PythonFile");
             cb.SetClient(uri, client);
 
-            Hover hover = GetDocumentHoverNameAsync(analysis, sourceLocation, cb, client, uri).WaitAndUnwrapExceptions();
+            Hover hover = ServicesLspAdapter.GetDocumentHoverNameAsync(analysis, sourceLocation, cb, client, uri).WaitAndUnwrapExceptions();
 
             if (hoverText.EndsWith("*")) {
                 // Check prefix first, but then show usual message for mismatched value
@@ -351,26 +348,6 @@ class A:
             if (span.HasValue) {
                 hover.range.Should().Be((Core.Text.Range)span.Value);
             }
-        }
-
-        private static async Task<Hover> GetDocumentHoverNameAsync(IDocumentAnalysis analysis, SourceLocation sourceLocation, PythonLanguageServiceProviderCallback cb, PythonLanguageClient client, Uri uri) {
-           
-            await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content);
-
-            await Task.Delay(1000);
-
-            //convert to LSP postion
-            Position position = sourceLocation;
-
-            var hover = await cb.RequestAsync(
-                new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
-                new LSP.TextDocumentPositionParams {
-                    TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
-                    Position = new LSP.Position { Line = position.line, Character = position.character }
-                },
-                CancellationToken.None
-            );
-            return hover;
         }
     }
 }

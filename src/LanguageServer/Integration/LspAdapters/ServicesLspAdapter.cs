@@ -190,74 +190,24 @@ namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
             }
         }
 
-        private static HierarchicalSymbol MakeHierarchicalSymbol(DocumentSymbol dSym) {
-            return new HierarchicalSymbol(
-                dSym.name,
-                ToSymbolKind(dSym.kind),
-                dSym.range,
-                dSym.selectionRange,
-                dSym.children.Length > 0 ? dSym.children.Select(MakeHierarchicalSymbol).ToList() : null);
-        }
+        internal static async Task<Hover> GetDocumentHoverNameAsync(IDocumentAnalysis analysis, SourceLocation sourceLocation, PythonLanguageServiceProviderCallback cb, PythonLanguageClient client, Uri uri) {
 
-        private static Indexing.SymbolKind ToSymbolKind(Protocol.SymbolKind kind) {
-            switch (kind) {
-                case Protocol.SymbolKind.None:
-                    return Indexing.SymbolKind.None;
-                case Protocol.SymbolKind.File:
-                    return Indexing.SymbolKind.File;
-                case Protocol.SymbolKind.Module:
-                    return Indexing.SymbolKind.Module;
-                case Protocol.SymbolKind.Namespace:
-                    return Indexing.SymbolKind.Namespace;
-                case Protocol.SymbolKind.Package:
-                    return Indexing.SymbolKind.Package;
-                case Protocol.SymbolKind.Class:
-                    return Indexing.SymbolKind.Class;
-                case Protocol.SymbolKind.Method:
-                    return Indexing.SymbolKind.Method;
-                case Protocol.SymbolKind.Property:
-                    return Indexing.SymbolKind.Property;
-                case Protocol.SymbolKind.Field:
-                    return Indexing.SymbolKind.Field;
-                case Protocol.SymbolKind.Constructor:
-                    return Indexing.SymbolKind.Constructor;
-                case Protocol.SymbolKind.Enum:
-                    return Indexing.SymbolKind.Enum;
-                case Protocol.SymbolKind.Interface:
-                    return Indexing.SymbolKind.Interface;
-                case Protocol.SymbolKind.Function:
-                    return Indexing.SymbolKind.Function;
-                case Protocol.SymbolKind.Variable:
-                    return Indexing.SymbolKind.Variable;
-                case Protocol.SymbolKind.Constant:
-                    return Indexing.SymbolKind.Constant;
-                case Protocol.SymbolKind.String:
-                    return Indexing.SymbolKind.String;
-                case Protocol.SymbolKind.Number:
-                    return Indexing.SymbolKind.Number;
-                case Protocol.SymbolKind.Boolean:
-                    return Indexing.SymbolKind.Boolean;
-                case Protocol.SymbolKind.Array:
-                    return Indexing.SymbolKind.Array;
-                case Protocol.SymbolKind.Object:
-                    return Indexing.SymbolKind.Object;
-                case Protocol.SymbolKind.Key:
-                    return Indexing.SymbolKind.Key;
-                case Protocol.SymbolKind.Null:
-                    return Indexing.SymbolKind.Null;
-                case Protocol.SymbolKind.EnumMember:
-                    return Indexing.SymbolKind.EnumMember;
-                case Protocol.SymbolKind.Struct:
-                    return Indexing.SymbolKind.Struct;
-                case Protocol.SymbolKind.Event:
-                    return Indexing.SymbolKind.Event;
-                case Protocol.SymbolKind.Operator:
-                    return Indexing.SymbolKind.Operator;
-                case Protocol.SymbolKind.TypeParameter:
-                    return Indexing.SymbolKind.TypeParameter;
-                default:
-                    throw new NotImplementedException($"{kind} is not a LSP's SymbolKind");
-            }
+            await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content);
+
+            await Task.Delay(1000);
+
+            //convert to LSP postion
+            Position position = sourceLocation;
+
+            var hover = await cb.RequestAsync(
+                new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
+                new LSP.TextDocumentPositionParams {
+                    TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
+                    Position = new LSP.Position { Line = position.line, Character = position.character }
+                },
+                CancellationToken.None
+            );
+            return hover;
         }
     }
 }
