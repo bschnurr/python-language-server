@@ -19,9 +19,9 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
 using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
+using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 

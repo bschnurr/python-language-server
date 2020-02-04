@@ -597,12 +597,12 @@ limit { limit_num}; """"""", line: 5);
             Check.ArgumentNotNull(nameof(text), text);
             Check.ArgumentNotNull(nameof(expected), expected);
             Check.ArgumentOutOfRange(nameof(line), () => line < 0);
-            
+
             var edits = ServicesLspAdapter.FormatLine(text, line, languageVersion);
 
             edits.Should().OnlyHaveTextEdit(expected, (line, editStart, line, text.Split('\n')[line].Length));
             // lineFormatter.UnmatchedToken(line).Should().Be(unmatched);
-            
+
         }
 
         public static void AssertNoEdits(string text, int line = 0, PythonLanguageVersion languageVersion = PythonLanguageVersion.V37) {

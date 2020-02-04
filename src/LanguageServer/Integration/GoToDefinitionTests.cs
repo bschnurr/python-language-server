@@ -245,7 +245,7 @@ class D(C):
         ";
             await CreateServicesAsync(PythonVersions.LatestAvailable3X);
             var rdt = Services.GetService<IRunningDocumentTable>();
-            
+
             var testMod = rdt.OpenDocument(testModPath, code);
             await Services.GetService<IPythonAnalyzer>().WaitForCompleteAnalysisAsync();
             var analysis = await testMod.GetAnalysisAsync();

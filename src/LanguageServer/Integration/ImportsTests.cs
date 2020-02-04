@@ -23,9 +23,9 @@ using Microsoft.Python.Analysis.Tests.FluentAssertions;
 using Microsoft.Python.Analysis.Types;
 using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
 using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
+using Microsoft.Python.LanguageServer.Sources;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
@@ -631,7 +631,7 @@ z.M3().
 
             comps = cs.GetCompletions(analysis, new SourceLocation(6, 3));
             comps.Should().HaveLabels("M3");
-            
+
             comps = cs.GetCompletions(analysis, new SourceLocation(8, 8));
             comps.Should().HaveLabels("M3");
 
