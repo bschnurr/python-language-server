@@ -23,13 +23,13 @@ using Microsoft.Python.Analysis.Documents;
 using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class ReferencesTests : LanguageServerTestBase {
         public TestContext TestContext { get; set; }

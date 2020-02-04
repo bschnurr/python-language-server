@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 using UnitTests.LanguageServerClient;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public sealed class AssemblySetup {
         [AssemblyInitialize]

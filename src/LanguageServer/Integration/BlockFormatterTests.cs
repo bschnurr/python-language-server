@@ -19,14 +19,13 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Python.Core.Text;
-using Microsoft.Python.LanguageServer.Formatting;
 using Microsoft.Python.LanguageServer.Protocol;
-using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class BlockFormatterTests {
         public TestContext TestContext { get; set; }
@@ -45,7 +44,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
         public void NullReader() {
-            Func<Task<TextEdit[]>> func = () => BlockFormatter.ProvideEdits(null, new Position(), new FormattingOptions());
+            Func<Task<TextEdit[]>> func = () => ServicesLspAdapter.BlockFormat(null, new Position(), new FormattingOptions());
             func.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("reader");
         }
 

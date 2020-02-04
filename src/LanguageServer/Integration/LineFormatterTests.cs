@@ -19,13 +19,13 @@ using System.IO;
 using FluentAssertions;
 using Microsoft.Python.Core.Diagnostics;
 using Microsoft.Python.LanguageServer.Formatting;
-using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.Parsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class LineFormatterTests {
         public TestContext TestContext { get; set; }

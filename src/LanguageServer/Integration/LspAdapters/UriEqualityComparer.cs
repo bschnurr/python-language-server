@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     internal sealed class UriEqualityComparer : IEqualityComparer<Uri> {
         private readonly UriComponents _components;
 

@@ -23,7 +23,7 @@ using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     internal sealed class RenameSourceLspAdapter {
         private readonly IServiceContainer _services;
 

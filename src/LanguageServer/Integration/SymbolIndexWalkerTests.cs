@@ -18,14 +18,14 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Indexing;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.Parsing;
 using Microsoft.Python.Parsing.Ast;
 using Microsoft.Python.Tests.Utilities.FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtilities;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class SymbolIndexWalkerTests {
         public TestContext TestContext { get; set; }

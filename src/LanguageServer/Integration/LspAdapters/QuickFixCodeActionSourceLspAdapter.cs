@@ -28,7 +28,7 @@ using Microsoft.Python.Parsing.Tests;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     internal sealed partial class QuickFixCodeActionSourceLspAdapter {
         private static readonly ImmutableArray<IQuickFixCodeActionProvider> _codeActionProviders =
             ImmutableArray<IQuickFixCodeActionProvider>.Create(MissingImportCodeActionProvider.Instance);

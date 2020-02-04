@@ -35,7 +35,7 @@ using UnitTests.LanguageServerClient;
 using UnitTests.LanguageServerClient.Mocks;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     public class ServicesLspAdapter {
         public static async Task<IServiceManager> CreateServicesAsync(string root, InterpreterConfiguration configuration, string stubCacheFolderPath = null, IServiceManager sm = null, string[] searchPaths = null) {
             var interpreter = sm.GetService<IPythonInterpreter>();

@@ -25,7 +25,7 @@ using Microsoft.Python.Core.Services;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
@@ -33,7 +33,7 @@ using TestUtilities;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class HoverTests : LanguageServerTestBase {
         public TestContext TestContext { get; set; }

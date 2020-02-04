@@ -24,7 +24,7 @@ using Newtonsoft.Json.Linq;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
 
     internal class PythonLanguageServiceProviderCallback {
         private readonly IServiceProvider _serviceProvider;
@@ -72,13 +72,13 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             }
         }
 
-        private async Task<PythonLanguageClient> FindClientAsync(Uri uri) {
+        private PythonLanguageClient FindClientAsync(Uri uri) {
             if (uri == null) {
                 return null;
             }
 
             if (!_clientCache.TryGetValue(uri, out var client)) {
-                client = await GetOrCreateClientAsync(uri);
+                client = GetOrCreateClientAsync(uri);
                 if (client != null) {
                     client = _clientCache.GetOrAdd(uri, client);
                 }
@@ -87,7 +87,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
             return client;
         }
 
-        private async Task<PythonLanguageClient> GetOrCreateClientAsync(Uri uri) {
+        private PythonLanguageClient GetOrCreateClientAsync(Uri uri) {
 
             var filePath = uri.LocalPath;
             if (string.IsNullOrEmpty(filePath)) {
@@ -129,7 +129,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
         }
         private async Task<TOut> DispatchToLanguageServer<TIn, TOut>(LspRequest<TIn, TOut> method, TIn param, CancellationToken cancellationToken) {
             var uri = GetDocumentUri(param);
-            var client = await FindClientAsync(uri);
+            var client = FindClientAsync(uri);
             if (client == null) {
                 return default(TOut);
             }
@@ -140,7 +140,7 @@ namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
 
         public async Task TextDocumentDidChangeAsync(DidChangeTextDocumentParams param, CancellationToken cancellationToken) {
             var uri = GetDocumentUri(param);
-            var client = await FindClientAsync(uri);
+            var client = FindClientAsync(uri);
             if (client == null) {
                 return;
             }

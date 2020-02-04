@@ -24,7 +24,7 @@ using NSubstitute.Exceptions;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     /// <summary>
     /// Represents set of files either opened in the editor or imported
     /// in order to provide analysis in open file. Rough equivalent of

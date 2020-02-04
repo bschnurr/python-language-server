@@ -25,7 +25,7 @@ using Microsoft.Python.LanguageServer.Protocol;
 using UnitTests.LanguageServerClient;
 using LSP = Microsoft.VisualStudio.LanguageServer.Protocol;
 
-namespace Microsoft.Python.LanguageServer.Tests.LspAdapters {
+namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
     internal class DefinitionSourceLspAdapter {
         private readonly IServiceContainer _services;
         public DefinitionSourceLspAdapter(IServiceContainer services){

@@ -28,8 +28,8 @@ using Microsoft.Python.Core;
 using Microsoft.Python.Core.Text;
 using Microsoft.Python.LanguageServer.Protocol;
 using Microsoft.Python.LanguageServer.Sources;
-using Microsoft.Python.LanguageServer.Tests.LspAdapters;
-using Microsoft.Python.LanguageServer.Tests.FluentAssertions;
+using Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters;
+using Microsoft.Python.LanguageServer.IntegrationTests.FluentAssertions;
 using Microsoft.Python.Parsing;
 using Microsoft.Python.Parsing.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,7 +37,7 @@ using TestUtilities;
 using Microsoft.Python.Core.Services;
 using Microsoft.Python.Analysis.Core.Interpreter;
 
-namespace Microsoft.Python.LanguageServer.Tests {
+namespace Microsoft.Python.LanguageServer.IntegrationTests {
     [TestClass]
     public class CompletionTests : LanguageServerTestBase {
         public TestContext TestContext { get; set; }
