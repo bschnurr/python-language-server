@@ -43,14 +43,6 @@ namespace Microsoft.Python.LanguageServer.IntegrationTests {
         [TestCategory("MPLS_LSP_INT")]
         [TestCategory("PYRIGHT_LSP_INT")]
         [TestMethod, Priority(0)]
-        public void NullReader() {
-            Func<Task<TextEdit[]>> func = () => ServicesLspAdapter.BlockFormat(null, new Position(), new FormattingOptions());
-            func.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("reader");
-        }
-
-        [TestCategory("MPLS_LSP_INT")]
-        [TestCategory("PYRIGHT_LSP_INT")]
-        [TestMethod, Priority(0)]
         public async Task FirstLine() {
             using (var reader = new StringReader(string.Empty)) {
                 var edits = await ServicesLspAdapter.BlockFormat(reader.ReadToEnd(), new Position { line = 0, character = 4 }, new FormattingOptions());
