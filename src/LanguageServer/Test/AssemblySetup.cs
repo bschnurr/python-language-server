@@ -24,7 +24,7 @@ namespace Microsoft.Python.LanguageServer.Tests {
     [TestClass]
     public sealed class AssemblySetup {
         [AssemblyInitialize]
-        public static void Initialize(TestContext testContext) => LanguageServerTestEnvironment.Initialize(testContext);
+        public static void Initialize(TestContext testContext) => AnalysisTestEnvironment.Initialize(testContext);
 
         private class AnalysisTestEnvironment : TestEnvironmentImpl, ITestEnvironment {
             public static void Initialize() {
@@ -32,12 +32,9 @@ namespace Microsoft.Python.LanguageServer.Tests {
                 Instance = instance;
                 TestEnvironment.Current = instance;
             }
-        }
-
-        private class LanguageServerTestEnvironment : TestEnvironmentImpl, ITestEnvironment {
 
             public static void Initialize(TestContext testContext) {
-                var instance = new LanguageServerTestEnvironment();
+                var instance = new AnalysisTestEnvironment();
                 Instance = instance;
                 TestEnvironment.Current = instance;
 
