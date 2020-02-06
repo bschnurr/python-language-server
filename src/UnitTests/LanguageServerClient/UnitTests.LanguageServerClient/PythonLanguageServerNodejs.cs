@@ -47,7 +47,7 @@ namespace UnitTests.LanguageServerClient {
                 return true;
             }
 
-            return version >= PythonLanguageVersion.V30 || version == PythonLanguageVersion.None;
+            return (version >= PythonLanguageVersion.V30) || version == PythonLanguageVersion.V27 || version == PythonLanguageVersion.None;
         }
 
         public async override Task<Connection> ActivateAsync() {
