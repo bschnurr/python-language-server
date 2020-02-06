@@ -51,19 +51,18 @@ namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
         }
 
         static public async Task<PythonLanguageClient> CreateClientAsync(InterpreterConfiguration configuration) {
-
             var contentTypeName = "PythonFile";
-
             configuration = configuration ?? PythonVersions.LatestAvailable;
+            var rootPath = TestData.GetTestSpecificRootPath();
 
             var clientContext = new PythonLanguageClientContextFixed(
                 contentTypeName,
                 configuration,
-                TestData.GetTestSpecificRootPath(),
+                rootPath,
                 Enumerable.Empty<string>()
             );
 
-            var broker = new MockLanguageClientBroker();
+            var broker = new MockLanguageClientBroker(rootPath);
             await PythonLanguageClient.EnsureLanguageClientAsync(
                 new JoinableTaskContext(),
                 clientContext,
@@ -188,26 +187,6 @@ namespace Microsoft.Python.LanguageServer.IntegrationTests.LspAdapters {
 
                 return res;
             }
-        }
-
-        internal static async Task<Hover> GetDocumentHoverNameAsync(IDocumentAnalysis analysis, SourceLocation sourceLocation, PythonLanguageServiceProviderCallback cb, PythonLanguageClient client, Uri uri) {
-
-            await RunningDocumentTableLspAdapter.OpenDocumentLspAsync(client, uri.AbsolutePath, analysis.Document.Content);
-
-            await Task.Delay(1000);
-
-            //convert to LSP postion
-            Position position = sourceLocation;
-
-            var hover = await cb.RequestAsync(
-                new LSP.LspRequest<LSP.TextDocumentPositionParams, Hover>(LSP.Methods.TextDocumentHoverName),
-                new LSP.TextDocumentPositionParams {
-                    TextDocument = new LSP.TextDocumentIdentifier { Uri = uri },
-                    Position = new LSP.Position { Line = position.line, Character = position.character }
-                },
-                CancellationToken.None
-            );
-            return hover;
         }
     }
 }
